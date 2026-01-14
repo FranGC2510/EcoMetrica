@@ -1,16 +1,16 @@
 /* application.css - Identidad Visual de EcoMetrica */
 
 .root {
-    /* Paleta de Colores Oficial (Según PDF Página 2) */
-    -fx-color-primario: #00897B;   /* Verde Azulado (Teal) */
-    -fx-color-secundario: #B2DFDB; /* Verde Menta Suave */
-    -fx-color-fondo: #F5F5F5;      /* Blanco Humo */
-    -fx-color-texto: #37474F;      /* Gris Carbón */
-    -fx-color-acento: #FF7043;     /* Naranja Atardecer */
+    /* Paleta de Colores Oficial */
+    -fx-color-primario: #00897B;
+    -fx-color-secundario: #B2DFDB;
+    -fx-color-fondo: #F5F5F5;
+    -fx-color-texto: #37474F;
+    -fx-color-acento: #FF7043;
 
     /* Colores de Feedback */
-    -fx-color-error: #D32F2F;      /* Rojo para huella alta */
-    -fx-color-exito: #388E3C;      /* Verde para huella baja */
+    -fx-color-error: #D32F2F;
+    -fx-color-exito: #388E3C;
 
     /* Configuración Base */
     -fx-font-family: 'Segoe UI', sans-serif;
@@ -31,5 +31,5 @@
 }
 
 .button:hover {
-    -fx-background-color: derive(-fx-color-primario, 20%); /* Un poco más claro al pasar el ratón */
+    -fx-background-color: derive(-fx-color-primario, 20%);
 }
