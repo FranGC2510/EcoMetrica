@@ -16,5 +16,7 @@ module org.dam.fcojavier.ecometrica {
     requires jbcrypt;
 
     opens org.dam.fcojavier.ecometrica to javafx.fxml;
+    opens org.dam.fcojavier.ecometrica.controllers to javafx.fxml;
+    opens org.dam.fcojavier.ecometrica.entities to org.hibernate.orm.core;
     exports org.dam.fcojavier.ecometrica;
 }
