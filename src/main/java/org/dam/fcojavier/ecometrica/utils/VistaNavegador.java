@@ -13,33 +13,43 @@ import java.io.IOException;
 public class VistaNavegador {
 
     /**
-     * Carga una nueva vista FXML en la ventana actual.
-     *
-     * @param event El evento que disparó la acción (necesario para obtener la ventana actual).
-     * @param fxmlName El nombre del archivo FXML (ej: "views/Registro.fxml").
+     * Opción A: Usar este método cuando el cambio de pantalla lo provoca un clic (Botón o Label).
+     * @param event El evento del ratón o teclado.
+     * @param fxmlName Ruta del archivo FXML (ej: "views/Registro.fxml").
      */
     public static void cargarVista(Event event, String fxmlName) {
-        try {
-            // 1. Obtener el Stage (ventana) desde el elemento que disparó el evento
-            Node source = (Node) event.getSource();
-            Stage stage = (Stage) source.getScene().getWindow();
+        Node node = (Node) event.getSource();
+        cargarVista(node.getScene(), fxmlName);
+    }
 
-            // 2. Cargar el nuevo FXML
+    /**
+     * Opción B: Usar este método desde el código lógico (ej: LoginController tras validar pass).
+     * @param currentScene La escena actual (se puede obtener de cualquier nodo con .getScene()).
+     * @param fxmlName Ruta del archivo FXML.
+     */
+    public static void cargarVista(Scene currentScene, String fxmlName) {
+        try {
+            // 1. Obtenemos la ventana actual (Stage)
+            Stage stage = (Stage) currentScene.getWindow();
+
+            // 2. Cargamos el nuevo FXML
             FXMLLoader loader = new FXMLLoader(MainApp.class.getResource(fxmlName));
             Parent root = loader.load();
 
-            // 3. Crear la nueva escena
-            Scene scene = new Scene(root, 800, 600);
+            // 3. Creamos la escena nueva.
+            // Ponemos un tamaño de 900x600 que es mejor para el Dashboard.
+            Scene scene = new Scene(root, 900, 600);
 
-            // 4. Cargar los estilos CSS (Importante para no perder los colores)
+            // 4. IMPORTANTE: Cargar el CSS global (para no perder tus colores Terracota)
             scene.getStylesheets().add(MainApp.class.getResource("/styles/application.css").toExternalForm());
 
-            // 5. Mostrar la nueva escena
+            // 5. Mostrar la nueva escena y centrar la ventana
             stage.setScene(scene);
+            stage.centerOnScreen();
             stage.show();
 
         } catch (IOException e) {
-            System.err.println("Error al cargar la vista: " + fxmlName);
+            System.err.println("Error grave cargando la vista: " + fxmlName);
             e.printStackTrace();
         }
     }

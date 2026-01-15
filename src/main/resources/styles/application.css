@@ -99,3 +99,54 @@
 .link-text:hover {
     -fx-underline: true;
 }
+
+/* --- DASHBOARD SIDEBAR --- */
+
+.sidebar {
+    -fx-background-color: #3E2723; /* Café oscuro */
+    -fx-pref-width: 220;
+}
+
+.sidebar-title {
+    -fx-text-fill: white;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+.sidebar-user-text {
+    -fx-text-fill: #D7CCC8; /* Gris claro */
+    -fx-font-size: 12px;
+    -fx-padding: 0 0 10 0;
+}
+
+/* Botones del Menú */
+.btn-menu {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-alignment: CENTER_LEFT;
+    -fx-font-size: 14px;
+    -fx-padding: 10 15;
+    -fx-cursor: hand;
+}
+
+.btn-menu:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-border-color: transparent transparent transparent -fx-color-primario;
+    -fx-border-width: 0 0 0 4; /* Línea naranja a la izquierda al pasar ratón */
+}
+
+.btn-menu-logout {
+    -fx-background-color: rgba(211, 47, 47, 0.1); /* Rojo muy suave */
+    -fx-text-fill: #EF9A9A; /* Rojo claro */
+    -fx-alignment: CENTER;
+    -fx-cursor: hand;
+}
+.btn-menu-logout:hover {
+    -fx-background-color: -fx-color-error;
+    -fx-text-fill: white;
+}
+
+.content-area {
+    -fx-background-color: -fx-color-fondo;
+    -fx-padding: 30;
+}

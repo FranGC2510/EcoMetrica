@@ -7,6 +7,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import org.dam.fcojavier.ecometrica.entities.Usuario;
 import org.dam.fcojavier.ecometrica.services.UsuarioService;
+import org.dam.fcojavier.ecometrica.utils.Sesion;
 import org.dam.fcojavier.ecometrica.utils.VistaNavegador;
 
 public class LoginController {
@@ -45,14 +46,11 @@ public class LoginController {
 
         if (usuarioLogueado != null) {
             // LOGIN ÉXITO
-            lblMensaje.setText("¡Bienvenido, " + usuarioLogueado.getNombre() + "!");
-            lblMensaje.setStyle("-fx-text-fill: -fx-color-exito;"); // Verde
+            Sesion.getInstancia().login(usuarioLogueado);
 
-            System.out.println("Login correcto. Usuario ID: " + usuarioLogueado.getId());
+            System.out.println("Login correcto. Accediendo al Dashboard...");
 
-            // TODO: Aquí añadiremos el código para cerrar esta ventana y abrir el Dashboard
-            // abrirDashboard(usuarioLogueado);
-
+            VistaNavegador.cargarVista(lblMensaje.getScene(), "views/MainLayout.fxml");
         } else {
             // LOGIN FALLIDO
             lblMensaje.setText("Email o contraseña incorrectos.");

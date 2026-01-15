@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="600.0" prefWidth="900.0"
+            xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.dam.fcojavier.ecometrica.controllers.MainController">
+
+    <left>
+        <VBox spacing="10.0" styleClass="sidebar">
+            <padding>
+                <Insets bottom="20.0" left="15.0" right="15.0" top="20.0"/>
+            </padding>
+
+            <Label text="EcoMetrica" styleClass="sidebar-title">
+                <VBox.margin>
+                    <Insets bottom="30.0" />
+                </VBox.margin>
+            </Label>
+
+            <Button text="Resumen" maxWidth="Infinity" styleClass="btn-menu"/>
+            <Button text="Mis Huellas" maxWidth="Infinity" styleClass="btn-menu"/>
+            <Button text="Añadir Registro" maxWidth="Infinity" styleClass="btn-menu"/>
+
+            <Label maxHeight="Infinity" VBox.vgrow="ALWAYS" />
+
+            <Label fx:id="lblBienvenida" text="Usuario" styleClass="sidebar-user-text"/>
+            <Button text="Cerrar Sesión" onAction="#onCerrarSesion" maxWidth="Infinity" styleClass="btn-menu-logout"/>
+        </VBox>
+    </left>
+
+    <center>
+        <VBox alignment="CENTER" fx:id="contentArea" styleClass="content-area">
+            <Label text="Bienvenido al Panel de Control" styleClass="titulo-app"/>
+            <Label text="Selecciona una opción del menú" styleClass="subtitulo"/>
+        </VBox>
+    </center>
+
+</BorderPane>
