@@ -13,6 +13,7 @@ module org.dam.fcojavier.ecometrica {
     requires jakarta.persistence; // JPA
     requires java.naming; // Necesario para Hibernate en algunos entornos
     requires com.github.librepdf.openpdf; // OpenPDF
+    requires jbcrypt;
 
     opens org.dam.fcojavier.ecometrica to javafx.fxml;
     exports org.dam.fcojavier.ecometrica;
