@@ -1,0 +1,196 @@
+/* application.css - Identidad Visual de EcoMetrica */
+
+.root {
+    /* Paleta de Colores Oficial */
+    -fx-color-primario: #D87D4A;
+    -fx-color-secundario: #FBAF85;
+    -fx-color-fondo: #FAFAF9;
+    -fx-color-texto: #3E2723;
+    -fx-color-borde: #D7CCC8;
+
+    /* Colores de Feedback */
+    -fx-color-error: #D32F2F;
+    -fx-color-exito: #388E3C;
+
+    /* Configuración Base */
+    -fx-font-family: 'Segoe UI', sans-serif;
+    -fx-background-color: -fx-color-fondo;
+    -fx-font-size: 14px;
+}
+
+/* COMPONENTES GENERALES */
+
+/* Etiquetas de texto */
+.label {
+    -fx-text-fill: -fx-color-texto;
+}
+
+/* Botones Principales (Terracota) */
+.btn-primary {
+    -fx-background-color: -fx-color-primario;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8; /* Bordes un poco más redondeados */
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 3, 0, 0, 2);
+}
+
+.btn-primary:hover {
+    -fx-background-color: -fx-color-secundario;
+    -fx-text-fill: #3E2723; /* Cambiamos texto a oscuro en hover para contraste */
+}
+
+/* Botones Planos / Enlaces */
+.btn-flat {
+    -fx-background-color: transparent;
+    -fx-text-fill: -fx-color-texto;
+    -fx-cursor: hand;
+    -fx-underline: true;
+}
+
+.btn-flat:hover {
+    -fx-text-fill: -fx-color-primario;
+}
+
+/* ESTILOS ESPECÍFICOS (LOGIN Y REGISTRO) */
+
+.login-container {
+    -fx-background-color: white; /* Mantenemos tarjeta blanca para contraste */
+    /* Sombra más suave y difusa */
+    -fx-effect: dropshadow(three-pass-box, rgba(62, 39, 35, 0.1), 20, 0, 0, 10);
+    -fx-background-radius: 15;
+    -fx-max-width: 400;
+    -fx-max-height: 550; /* Un poco más alto para el registro */
+}
+
+.titulo-app {
+    -fx-text-fill: -fx-color-primario;
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+}
+
+.subtitulo {
+    -fx-text-fill: derive(-fx-color-texto, 30%); /* Un café más claro */
+    -fx-font-size: 14px;
+    -fx-padding: 0 0 15 0;
+}
+
+/* Campos de texto */
+.text-field, .password-field {
+    -fx-background-color: #F5F5F4; /* Gris arena muy claro */
+    -fx-border-color: transparent;
+    -fx-background-radius: 8;
+    -fx-padding: 10;
+    -fx-text-fill: -fx-color-texto;
+}
+
+.text-field:focused, .password-field:focused {
+    -fx-background-color: white;
+    -fx-border-color: -fx-color-primario;
+    -fx-border-width: 1.5;
+}
+
+.link-text {
+    -fx-text-fill: -fx-color-primario;
+    -fx-cursor: hand;
+    -fx-font-size: 12px;
+}
+.link-text:hover {
+    -fx-underline: true;
+}
+
+/* --- DASHBOARD SIDEBAR --- */
+
+.sidebar {
+    -fx-background-color: #3E2723; /* Café oscuro */
+    -fx-pref-width: 220;
+}
+
+.sidebar-title {
+    -fx-text-fill: white;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+}
+
+.sidebar-user-text {
+    -fx-text-fill: #D7CCC8; /* Gris claro */
+    -fx-font-size: 12px;
+    -fx-padding: 0 0 10 0;
+}
+
+/* Botones del Menú */
+.btn-menu {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-alignment: CENTER_LEFT;
+    -fx-font-size: 14px;
+    -fx-padding: 10 15;
+    -fx-cursor: hand;
+}
+
+.btn-menu:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-border-color: transparent transparent transparent -fx-color-primario;
+    -fx-border-width: 0 0 0 4; /* Línea naranja a la izquierda al pasar ratón */
+}
+
+.btn-menu-logout {
+    -fx-background-color: rgba(211, 47, 47, 0.1); /* Rojo muy suave */
+    -fx-text-fill: #EF9A9A; /* Rojo claro */
+    -fx-alignment: CENTER;
+    -fx-cursor: hand;
+}
+.btn-menu-logout:hover {
+    -fx-background-color: -fx-color-error;
+    -fx-text-fill: white;
+}
+
+.content-area {
+    -fx-background-color: -fx-color-fondo;
+    -fx-padding: 30;
+}
+
+/* ==============================================
+   ESTILOS PARA HÁBITOS Y VALIDACIONES
+   ============================================== */
+
+/* 1. Celda del calendario para fechas futuras */
+.fecha-futura {
+    -fx-background-color: derive(-fx-color-error, 170%);
+    -fx-opacity: 0.5;
+}
+
+/* 2. Estilos para los mensajes de feedback (lblMensaje) */
+.mensaje-base {
+    -fx-font-weight: bold;
+}
+
+.mensaje-error {
+    -fx-text-fill: -fx-color-error; /* Usamos tu variable global */
+}
+
+.mensaje-exito {
+    -fx-text-fill: -fx-color-exito; /* Usamos tu variable global */
+}
+
+.mensaje-info {
+    -fx-text-fill: -fx-color-primario; /* Usamos tu variable global */
+}
+
+/* --- ARREGLO COMBOBOX --- */
+
+/* 1. Color del texto de ayuda (Prompt) */
+.combo-box-base {
+    -fx-prompt-text-fill: derive(-fx-color-texto, 50%); /* Un café al 50% de opacidad */
+}
+
+/* 2. Asegurarnos de que el texto interno no tape el prompt si está vacío */
+.combo-box .list-cell {
+    -fx-text-fill: -fx-color-texto; /* Texto normal oscuro */
+}
+
+/* 3. Ajuste específico para cuando está vacío */
+.combo-box:empty .list-cell {
+    -fx-text-fill: derive(-fx-color-texto, 50%);
+}

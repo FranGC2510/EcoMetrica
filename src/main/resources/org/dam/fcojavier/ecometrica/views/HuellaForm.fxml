@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="TOP_CENTER" spacing="20.0"
+      xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.dam.fcojavier.ecometrica.controllers.HuellaController"
+      styleClass="login-container"
+      maxWidth="500.0">
+
+    <padding>
+        <Insets bottom="30.0" left="40.0" right="40.0" top="30.0"/>
+    </padding>
+
+    <Label text="Nuevo Registro" styleClass="titulo-app">
+        <font>
+            <Font name="System Bold" size="22.0"/>
+        </font>
+    </Label>
+    <Label text="Registra tu actividad para calcular el impacto" styleClass="subtitulo"/>
+
+    <VBox alignment="CENTER_LEFT" spacing="5.0" maxWidth="Infinity">
+        <Label text="Categoría" style="-fx-font-weight: bold;"/>
+        <ComboBox fx:id="cbCategoria" promptText="Selecciona una categoría..." maxWidth="Infinity"/>
+    </VBox>
+
+    <VBox alignment="CENTER_LEFT" spacing="5.0" maxWidth="Infinity">
+        <Label text="Actividad Específica" style="-fx-font-weight: bold;"/>
+        <ComboBox fx:id="cbActividad" promptText="Primero elige categoría..." disable="true" maxWidth="Infinity"/>
+    </VBox>
+
+    <VBox alignment="CENTER_LEFT" spacing="5.0" maxWidth="Infinity">
+        <Label text="Cantidad consumida" style="-fx-font-weight: bold;"/>
+        <HBox spacing="10.0" alignment="CENTER_LEFT">
+            <TextField fx:id="txtValor" promptText="Ej: 150" HBox.hgrow="ALWAYS"/>
+            <Label fx:id="lblUnidad" text="Unidad" style="-fx-text-fill: -fx-color-texto; -fx-font-style: italic;"/>
+        </HBox>
+    </VBox>
+
+    <VBox alignment="CENTER_LEFT" spacing="5.0" maxWidth="Infinity">
+        <Label text="Fecha del consumo" style="-fx-font-weight: bold;"/>
+        <DatePicker fx:id="dpFecha" maxWidth="Infinity"/>
+    </VBox>
+
+    <Label fx:id="lblMensaje" wrapText="true"/>
+
+    <Button text="GUARDAR HUELLA" onAction="#onGuardarClick" defaultButton="true"
+            maxWidth="Infinity" styleClass="btn-primary">
+        <VBox.margin>
+            <Insets top="10.0"/>
+        </VBox.margin>
+    </Button>
+
+</VBox>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox alignment="CENTER" spacing="20.0" styleClass="login-container" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.dam.fcojavier.ecometrica.controllers.LoginController">
+
+    <padding>
+        <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
+    </padding>
+
+    <Label styleClass="titulo-app" text="EcoMetrica">
+        <font>
+            <Font name="System Bold" size="24.0" />
+        </font>
+    </Label>
+
+    <Label styleClass="subtitulo" text="Inicia sesión para continuar" />
+
+    <VBox alignment="CENTER_LEFT" maxWidth="300.0" spacing="5.0">
+        <Label text="Email" />
+        <TextField fx:id="txtEmail" promptText="ejemplo@correo.com" text="fran@gmail.com" />
+    </VBox>
+
+    <VBox alignment="CENTER_LEFT" maxWidth="300.0" spacing="5.0">
+        <Label text="Contraseña" />
+        <PasswordField fx:id="txtPassword" promptText="********" text="123" />
+    </VBox>
+
+    <Label fx:id="lblMensaje" maxWidth="300.0" wrapText="true" />
+
+    <Button defaultButton="true" maxWidth="300.0" onAction="#onLoginButtonClick" styleClass="btn-primary" text="ENTRAR" />
+
+    <Label onMouseClicked="#onRegistrarLabelClick" styleClass="link-text" text="¿No tienes cuenta? Regístrate aquí" />
+
+</VBox>
