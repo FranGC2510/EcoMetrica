@@ -13,12 +13,12 @@ public class Habito {
     @MapsId("idUsuario")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_usuario", nullable = false)
-    private Usuario id_usuario;
+    private Usuario usuario;
 
     @MapsId("idActividad")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_actividad", nullable = false)
-    private Actividad id_actividad;
+    private Actividad actividad;
 
     @Column(name = "frecuencia", nullable = false)
     private Integer frecuencia;
@@ -37,20 +37,20 @@ public class Habito {
         this.id = id;
     }
 
-    public Usuario getId_usuario() {
-        return id_usuario;
+    public Usuario getUsuario() {
+        return usuario;
     }
 
-    public void setId_usuario(Usuario idUsuario) {
-        this.id_usuario = idUsuario;
+    public void setUsuario(Usuario idUsuario) {
+        this.usuario = idUsuario;
     }
 
-    public Actividad getId_actividad() {
-        return id_actividad;
+    public Actividad getActividad() {
+        return actividad;
     }
 
-    public void setId_actividad(Actividad idActividad) {
-        this.id_actividad = idActividad;
+    public void setActividad(Actividad idActividad) {
+        this.actividad = idActividad;
     }
 
     public Integer getFrecuencia() {

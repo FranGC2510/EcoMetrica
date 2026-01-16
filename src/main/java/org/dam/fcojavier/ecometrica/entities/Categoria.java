@@ -3,6 +3,7 @@ package org.dam.fcojavier.ecometrica.entities;
 import jakarta.persistence.*;
 
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -22,11 +23,11 @@ public class Categoria {
     @Column(name = "unidad", nullable = false, length = 20)
     private String unidad;
 
-    @OneToMany(mappedBy = "idCategoria")
-    private Set<Actividad> actividads = new LinkedHashSet<>();
+    @OneToMany(mappedBy = "Categoria")
+    private Set<Actividad> actividades = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "idCategoria")
-    private Set<Recomendacion> recomendacions = new LinkedHashSet<>();
+    private Set<Recomendacion> recomendaciones = new LinkedHashSet<>();
 
     public Integer getId() {
         return id;
@@ -60,20 +61,37 @@ public class Categoria {
         this.unidad = unidad;
     }
 
-    public Set<Actividad> getActividads() {
-        return actividads;
+    public Set<Actividad> getActividades() {
+        return actividades;
     }
 
-    public void setActividads(Set<Actividad> actividads) {
-        this.actividads = actividads;
+    public void setActividades(Set<Actividad> actividads) {
+        this.actividades = actividads;
     }
 
-    public Set<Recomendacion> getRecomendacions() {
-        return recomendacions;
+    public Set<Recomendacion> getRecomendaciones() {
+        return recomendaciones;
     }
 
-    public void setRecomendacions(Set<Recomendacion> recomendacions) {
-        this.recomendacions = recomendacions;
+    public void setRecomendaciones(Set<Recomendacion> recomendacions) {
+        this.recomendaciones = recomendacions;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Categoria categoria = (Categoria) o;
+        // Comparamos solo por el ID (que es único)
+        return Objects.equals(id, categoria.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+    @Override
+    public String toString() {
+        return nombre;
+    }
 }

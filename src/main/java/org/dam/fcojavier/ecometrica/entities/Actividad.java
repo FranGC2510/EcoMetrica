@@ -3,6 +3,7 @@ package org.dam.fcojavier.ecometrica.entities;
 import jakarta.persistence.*;
 
 import java.util.LinkedHashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -18,9 +19,9 @@ public class Actividad {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_categoria", nullable = false)
-    private Categoria idCategoria;
+    private Categoria Categoria;
 
-    @OneToMany(mappedBy = "id_actividad")
+    @OneToMany(mappedBy = "actividad")
     private Set<Habito> habitos = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "id_actividad")
@@ -42,12 +43,12 @@ public class Actividad {
         this.nombre = nombre;
     }
 
-    public Categoria getIdCategoria() {
-        return idCategoria;
+    public Categoria getCategoria() {
+        return Categoria;
     }
 
-    public void setIdCategoria(Categoria idCategoria) {
-        this.idCategoria = idCategoria;
+    public void setCategoria(Categoria idCategoria) {
+        this.Categoria = idCategoria;
     }
 
     public Set<Habito> getHabitos() {
@@ -66,4 +67,21 @@ public class Actividad {
         this.huellas = huellas;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Actividad actividad = (Actividad) o;
+        return Objects.equals(id, actividad.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return nombre;
+    }
 }

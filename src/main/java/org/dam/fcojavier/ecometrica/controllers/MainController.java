@@ -2,11 +2,16 @@ package org.dam.fcojavier.ecometrica.controllers;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
+import org.dam.fcojavier.ecometrica.MainApp;
 import org.dam.fcojavier.ecometrica.entities.Usuario;
 import org.dam.fcojavier.ecometrica.utils.Sesion;
 import org.dam.fcojavier.ecometrica.utils.VistaNavegador;
+
+import java.io.IOException;
 
 public class MainController {
 
@@ -40,7 +45,24 @@ public class MainController {
         VistaNavegador.cargarVista(event, "views/Login.fxml");
     }
 
-    // Aquí añadiremos más adelante los métodos para cambiar el contenido central
-    // public void mostrarResumen() { ... }
-    // public void mostrarHuellas() { ... }
+    private void cargarPantalla(String fxml) {
+        try {
+            FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("views/" + fxml));
+            Parent vista = loader.load();
+            contentPane.setCenter(vista); // Cambio dinámico del centro
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void onMenuAnadirClick(ActionEvent event) {
+        cargarPantalla("HuellaForm.fxml");
+    }
+
+    @FXML
+    public void onMenuHabitosClick(ActionEvent event) {
+        System.out.println("Ir a gestión de hábitos");
+        cargarPantalla("HabitosView.fxml");
+    }
 }

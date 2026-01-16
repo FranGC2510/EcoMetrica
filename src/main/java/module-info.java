@@ -17,6 +17,6 @@ module org.dam.fcojavier.ecometrica {
 
     opens org.dam.fcojavier.ecometrica to javafx.fxml;
     opens org.dam.fcojavier.ecometrica.controllers to javafx.fxml;
-    opens org.dam.fcojavier.ecometrica.entities to org.hibernate.orm.core;
+    opens org.dam.fcojavier.ecometrica.entities to org.hibernate.orm.core, javafx.base;
     exports org.dam.fcojavier.ecometrica;
 }

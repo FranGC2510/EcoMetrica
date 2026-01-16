@@ -150,3 +150,47 @@
     -fx-background-color: -fx-color-fondo;
     -fx-padding: 30;
 }
+
+/* ==============================================
+   ESTILOS PARA HÁBITOS Y VALIDACIONES
+   ============================================== */
+
+/* 1. Celda del calendario para fechas futuras */
+.fecha-futura {
+    -fx-background-color: derive(-fx-color-error, 170%);
+    -fx-opacity: 0.5;
+}
+
+/* 2. Estilos para los mensajes de feedback (lblMensaje) */
+.mensaje-base {
+    -fx-font-weight: bold;
+}
+
+.mensaje-error {
+    -fx-text-fill: -fx-color-error; /* Usamos tu variable global */
+}
+
+.mensaje-exito {
+    -fx-text-fill: -fx-color-exito; /* Usamos tu variable global */
+}
+
+.mensaje-info {
+    -fx-text-fill: -fx-color-primario; /* Usamos tu variable global */
+}
+
+/* --- ARREGLO COMBOBOX --- */
+
+/* 1. Color del texto de ayuda (Prompt) */
+.combo-box-base {
+    -fx-prompt-text-fill: derive(-fx-color-texto, 50%); /* Un café al 50% de opacidad */
+}
+
+/* 2. Asegurarnos de que el texto interno no tape el prompt si está vacío */
+.combo-box .list-cell {
+    -fx-text-fill: -fx-color-texto; /* Texto normal oscuro */
+}
+
+/* 3. Ajuste específico para cuando está vacío */
+.combo-box:empty .list-cell {
+    -fx-text-fill: derive(-fx-color-texto, 50%);
+}

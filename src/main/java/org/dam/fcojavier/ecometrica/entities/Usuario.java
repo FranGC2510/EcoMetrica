@@ -26,7 +26,7 @@ public class Usuario {
     @Column(name = "fecha_registro", nullable = false)
     private LocalDate fechaRegistro;
 
-    @OneToMany(mappedBy = "id_usuario")
+    @OneToMany(mappedBy = "usuario")
     private Set<Habito> habitos = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "id_usuario")
