@@ -19,7 +19,7 @@ public class Actividad {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_categoria", nullable = false)
-    private Categoria Categoria;
+    private Categoria categoria;
 
     @OneToMany(mappedBy = "actividad")
     private Set<Habito> habitos = new LinkedHashSet<>();
@@ -44,11 +44,11 @@ public class Actividad {
     }
 
     public Categoria getCategoria() {
-        return Categoria;
+        return categoria;
     }
 
     public void setCategoria(Categoria idCategoria) {
-        this.Categoria = idCategoria;
+        this.categoria = idCategoria;
     }
 
     public Set<Habito> getHabitos() {

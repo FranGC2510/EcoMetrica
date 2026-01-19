@@ -10,7 +10,7 @@ import java.util.List;
 
 public class ActividadDAO extends GenericDAO<Actividad>{
 
-    private static final String HQL_BY_CATEGORIA = "FROM Actividad a JOIN FETCH a.Categoria WHERE a.Categoria.id = :idCat";
+    private static final String HQL_BY_CATEGORIA = "FROM Actividad a JOIN FETCH a.categoria WHERE a.categoria.id = :idCat";
 
     public ActividadDAO() {
         super(Actividad.class);

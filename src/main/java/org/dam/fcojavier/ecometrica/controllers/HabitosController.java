@@ -26,6 +26,10 @@ public class HabitosController {
     @FXML private ComboBox<String> cbTipo; // diario, semanal...
     @FXML private DatePicker dpUltimaFecha;
     @FXML private Label lblMensaje;
+    @FXML private Button btnGuardar;
+    @FXML private Button btnEliminar;
+
+    private Habito habitoSeleccionado = null;
 
     // --- TABLA ---
     @FXML private TableView<Habito> tablaHabitos;
@@ -89,6 +93,7 @@ public class HabitosController {
         // 4. Listener DE LA TABLA: Para editar al hacer clic
         tablaHabitos.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
+                habitoSeleccionado = newSelection; // <--- IMPORTANTE: Guardamos la referencia
                 cargarHabitoEnFormulario(newSelection);
             }
         });
@@ -119,6 +124,11 @@ public class HabitosController {
         cbTipo.setValue(habito.getTipo());
         dpUltimaFecha.setValue(habito.getUltimaFecha());
 
+        cbCategoria.setDisable(true);
+        cbActividad.setDisable(true);
+
+        btnGuardar.setText("ACTUALIZAR DATOS");
+        btnEliminar.setDisable(false);
         mostrarMensaje("Editando hábito: " + habito.getActividad().getNombre(), "mensaje-info");
     }
 
@@ -164,9 +174,31 @@ public class HabitosController {
     }
 
     @FXML
+    public void onEliminarClick() {
+        if (habitoSeleccionado != null) {
+            // Pregunta de seguridad opcional (recomendado en UX real, pero aquí directo por sencillez)
+            habitoService.eliminarHabito(habitoSeleccionado);
+
+            mostrarMensaje("Hábito eliminado correctamente.", "mensaje-exito");
+
+            refrescarTabla();
+            onLimpiarClick(); // Limpiamos selección
+        }
+    }
+
+    @FXML
     public void onLimpiarClick() {
         limpiarFormulario();
         tablaHabitos.getSelectionModel().clearSelection();
+
+        // Resetear estado
+        habitoSeleccionado = null;
+        btnGuardar.setText("GUARDAR CONFIGURACIÓN");
+        btnEliminar.setDisable(true);
+
+        // Reactivar combos por si estaban bloqueados por edición
+        cbCategoria.setDisable(false);
+        // cbActividad se gestiona solo según la categoría
         lblMensaje.setText("");
     }
 

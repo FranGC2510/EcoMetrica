@@ -23,7 +23,7 @@ public class Categoria {
     @Column(name = "unidad", nullable = false, length = 20)
     private String unidad;
 
-    @OneToMany(mappedBy = "Categoria")
+    @OneToMany(mappedBy = "categoria")
     private Set<Actividad> actividades = new LinkedHashSet<>();
 
     @OneToMany(mappedBy = "idCategoria")

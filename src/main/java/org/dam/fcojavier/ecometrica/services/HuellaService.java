@@ -63,4 +63,65 @@ public class HuellaService {
         // Fórmula: Valor * Factor de Emisión
         return valor * actividad.getCategoria().getFactorEmision();
     }
+
+    /**
+     * Recupera el historial de huellas de un usuario.
+     */
+    public List<Huella> obtenerHuellasDelUsuario(Usuario usuario) {
+        // Delegamos al DAO que ya tiene el método findByUsuario implementado
+        return huellaDAO.findByUsuario(usuario.getId());
+    }
+
+    public void eliminarHuella(Huella huella) {
+        huellaDAO.delete(huella);
+    }
+
+    /**
+     * Actualiza una huella existente y recalcula su impacto si cambiaron los valores.
+     */
+    public double actualizarHuella(Huella huella) {
+        // Recalculamos la unidad y el valor por seguridad, por si cambió la actividad
+        huella.setUnidad(huella.getId_actividad().getCategoria().getUnidad());
+
+        huellaDAO.update(huella);
+
+        // Devolvemos el impacto recalculado
+        return huella.getValor() * huella.getId_actividad().getCategoria().getFactorEmision();
+    }
+
+    public double calcularImpactoTotal(Usuario usuario) {
+        return huellaDAO.obtenerImpactoTotal(usuario.getId());
+    }
+
+    /**
+     * Devuelve los datos listos para un PieChart (Nombre -> Valor)
+     * JavaFX usa 'PieChart.Data', pero para no mezclar UI con Service,
+     * devolvemos la lista cruda del DAO o un Map. Por sencillez, pasamos la lista del DAO.
+     */
+    public List<Object[]> obtenerEstadisticasPorCategoria(Usuario usuario) {
+        return huellaDAO.obtenerImpactoPorCategoria(usuario.getId());
+    }
+
+    /**
+     * Calcula el impacto en un rango de fechas personalizado.
+     */
+    public double calcularImpactoRango(Usuario usuario, LocalDate inicio, LocalDate fin) {
+        return huellaDAO.obtenerImpactoPorRangoFechas(usuario.getId(), inicio, fin);
+    }
+
+    /**
+     * Obtiene la media de la comunidad para comparar.
+     * @return Lista de [Categoría, Media]
+     */
+    public List<Object[]> obtenerComparativaComunidad() {
+        return huellaDAO.obtenerMediaImpactoComunidad();
+    }
+
+    /**
+     * Obtiene la media de impacto del usuario por categoría.
+     * Útil para comparar con la media global.
+     */
+    public List<Object[]> obtenerMediaImpactoUsuario(Usuario usuario) {
+        return huellaDAO.obtenerMediaImpactoPorCategoria(usuario.getId());
+    }
 }

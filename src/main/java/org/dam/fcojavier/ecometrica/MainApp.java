@@ -4,12 +4,21 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.dam.fcojavier.ecometrica.utils.DataSeeder;
+import org.dam.fcojavier.ecometrica.utils.HibernateUtil;
 
 import java.io.IOException;
 
 public class MainApp extends Application {
     @Override
     public void start(Stage stage) throws IOException {
+        System.out.println("Iniciando EcoMetrica...");
+
+        HibernateUtil.getSessionFactory();
+
+        DataSeeder seeder = new DataSeeder();
+        seeder.sembrarDatos();
+
         FXMLLoader fxmlLoader = new FXMLLoader(MainApp.class.getResource("views/Login.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 800, 600);
         scene.getStylesheets().add(getClass().getResource("/styles/application.css").toExternalForm()); // <--- IMPORTANTE
@@ -18,6 +27,14 @@ public class MainApp extends Application {
         stage.setScene(scene);
         stage.show();
     }
+
+    @Override
+    public void stop() throws Exception {
+        // Cerramos la conexión al salir de la app
+        HibernateUtil.shutdown();
+        super.stop();
+    }
+
     public static void main(String[] args) {
         launch();
     }

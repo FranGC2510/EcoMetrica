@@ -15,26 +15,26 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="org.dam.fcojavier.ecometrica.controllers.HabitosController"
+            fx:controller="org.dam.fcojavier.ecometrica.controllers.HuellaController"
             styleClass="content-area">
 
     <top>
         <VBox spacing="5.0">
-            <Label text="Mis Hábitos" styleClass="titulo-app">
+            <Label text="Mis Huellas de Carbono" styleClass="titulo-app">
                 <font><Font name="System Bold" size="24.0"/></font>
             </Label>
-            <Label text="Configura tus actividades recurrentes" styleClass="subtitulo"/>
+            <Label text="Registra y consulta tu impacto ambiental" styleClass="subtitulo"/>
             <padding><Insets bottom="20"/></padding>
         </VBox>
     </top>
 
     <left>
-        <VBox spacing="15.0" styleClass="login-container" maxWidth="300.0">
+        <VBox spacing="15.0" styleClass="login-container" maxWidth="320.0">
             <padding>
                 <Insets top="20" right="20" bottom="20" left="20"/>
             </padding>
 
-            <Label text="Editar Hábito" style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
+            <Label text="Nuevo Registro" style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
 
             <VBox spacing="5">
                 <Label text="Categoría"/>
@@ -46,26 +46,23 @@
                 <ComboBox fx:id="cbActividad" promptText="Primero categoría..." disable="true" maxWidth="Infinity"/>
             </VBox>
 
-            <HBox spacing="10">
-                <VBox spacing="5" HBox.hgrow="ALWAYS">
-                    <Label text="Frecuencia"/>
-                    <TextField fx:id="txtFrecuencia" promptText="Ej: 3"/>
-                </VBox>
-                <VBox spacing="5" HBox.hgrow="ALWAYS">
-                    <Label text="Tipo"/>
-                    <ComboBox fx:id="cbTipo" promptText="Semanal" maxWidth="Infinity"/>
-                </VBox>
-            </HBox>
+            <VBox spacing="5">
+                <Label text="Cantidad"/>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <TextField fx:id="txtValor" promptText="Ej: 150" HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="lblUnidad" text="-" minWidth="30" style="-fx-text-fill: gray;"/>
+                </HBox>
+            </VBox>
 
             <VBox spacing="5">
-                <Label text="Última vez realizado"/>
-                <DatePicker fx:id="dpUltimaFecha" maxWidth="Infinity"/>
+                <Label text="Fecha"/>
+                <DatePicker fx:id="dpFecha" maxWidth="Infinity"/>
             </VBox>
 
             <Label fx:id="lblMensaje" wrapText="true"/>
 
             <VBox spacing="10">
-                <Button fx:id="btnGuardar" text="GUARDAR CONFIGURACIÓN" onAction="#onGuardarClick" styleClass="btn-primary" maxWidth="Infinity"/>
+                <Button fx:id="btnGuardar" text="REGISTRAR IMPACTO" onAction="#onGuardarClick" defaultButton="true" styleClass="btn-primary" maxWidth="Infinity"/>
 
                 <HBox spacing="10">
                     <Button fx:id="btnEliminar" text="Eliminar" onAction="#onEliminarClick" style="-fx-background-color: #D32F2F; -fx-text-fill: white;" maxWidth="Infinity" HBox.hgrow="ALWAYS" disable="true"/>
@@ -76,23 +73,27 @@
     </left>
 
     <center>
-        <VBox>
+        <VBox spacing="10.0">
             <padding><Insets left="20"/></padding>
-            <TableView fx:id="tablaHabitos" VBox.vgrow="ALWAYS">
+
+            <Label text="Historial de Registros" style="-fx-font-weight: bold; -fx-font-size: 14px; -fx-text-fill: #3E2723;"/>
+
+            <TableView fx:id="tablaHuellas" VBox.vgrow="ALWAYS">
                 <columns>
-                    <TableColumn fx:id="colCategoria" text="Categoría" prefWidth="100"/>
+                    <TableColumn fx:id="colFecha" text="Fecha" prefWidth="100"/>
                     <TableColumn fx:id="colActividad" text="Actividad" prefWidth="150"/>
-                    <TableColumn fx:id="colFrecuencia" text="Frecuencia" prefWidth="80"/>
-                    <TableColumn fx:id="colTipo" text="Periodo" prefWidth="100"/>
-                    <TableColumn fx:id="colFecha" text="Última Fecha" prefWidth="100"/>
+                    <TableColumn fx:id="colCategoria" text="Categoría" prefWidth="100"/>
+                    <TableColumn fx:id="colValor" text="Consumo" prefWidth="80"/>
+                    <TableColumn fx:id="colUnidad" text="Unidad" prefWidth="60"/>
+                    <TableColumn fx:id="colImpacto" text="Impacto (kg CO₂)" prefWidth="120" style="-fx-alignment: CENTER-RIGHT; -fx-font-weight: bold;"/>
                 </columns>
                 <columnResizePolicy>
                     <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
                 </columnResizePolicy>
+                <placeholder>
+                    <Label text="No hay registros. ¡Añade tu primera huella!"/>
+                </placeholder>
             </TableView>
-            <Label text="* Selecciona una fila para editarla" style="-fx-font-style: italic; -fx-text-fill: gray;">
-                <VBox.margin><Insets top="5"/></VBox.margin>
-            </Label>
         </VBox>
     </center>
 
