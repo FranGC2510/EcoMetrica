@@ -4,6 +4,7 @@ package org.dam.fcojavier.ecometrica.controllers;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -29,10 +30,14 @@ public class InicioController {
     @FXML private Label lblSaludo;
     @FXML private Label lblHuellaMes;
     @FXML private Label lblHuellaTotal;
-    @FXML private Label lblUltimaActividad;
-    @FXML private Label lblUltimaFecha;
     @FXML private HBox boxPodium;
     @FXML private Label lblConsejo;
+
+    @FXML private ProgressBar barraProgreso;
+    @FXML private Label lblPorcentajeComparacion;
+    @FXML private Label lblValoresAbsolutos;
+
+    private static final double META_MENSUAL_KG = 350.0;
 
     @FXML
     public void initialize() {
@@ -43,6 +48,7 @@ public class InicioController {
 
         cargarKPIs(usuario);
         cargarTop3(usuario);
+        cargarComparativa(usuario);
     }
 
     private void cargarKPIs(Usuario usuario) {
@@ -55,19 +61,6 @@ public class InicioController {
         // KPI 2: Total Histórico
         double totalHistorico = huellaService.calcularImpactoTotal(usuario);
         lblHuellaTotal.setText(String.format("%.2f kg", totalHistorico));
-
-        // KPI 3: Última Actividad (Buscamos la última huella)
-        List<Huella> huellas = huellaService.obtenerHuellasDelUsuario(usuario);
-        if (!huellas.isEmpty()) {
-            // Ordenamos por fecha descendente para coger la última
-            huellas.sort(Comparator.comparing(Huella::getFecha).reversed());
-            Huella ultima = huellas.get(0);
-            lblUltimaActividad.setText(ultima.getId_actividad().getNombre());
-            lblUltimaFecha.setText(ultima.getFecha().toString());
-        } else {
-            lblUltimaActividad.setText("-");
-            lblUltimaFecha.setText("Sin registros");
-        }
     }
 
     private void cargarTop3(Usuario usuario) {
@@ -98,6 +91,38 @@ public class InicioController {
 
             cargarConsejoPorCategoria(catTop1);
         }
+    }
+
+    private void cargarComparativa(Usuario usuario) {
+        // 1. Calcular impacto del mes ACTUAL
+        LocalDate hoy = LocalDate.now();
+        LocalDate inicioMes = hoy.with(TemporalAdjusters.firstDayOfMonth());
+        LocalDate finMes = hoy.with(TemporalAdjusters.lastDayOfMonth());
+
+        double impactoMesActual = huellaService.calcularImpactoRango(usuario, inicioMes, finMes);
+
+        // 2. Calcular porcentaje respecto a la meta
+        double porcentaje = impactoMesActual / META_MENSUAL_KG;
+
+        // 3. Configurar la Barra de Progreso
+        // La barra va de 0.0 a 1.0. Si nos pasamos, la dejamos en 1.0 (llena)
+        barraProgreso.setProgress(Math.min(porcentaje, 1.0));
+
+        // 4. Cambiar color según el estado (Verde = Bien, Naranja = Cuidado, Rojo = Mal)
+        // Usamos estilos en línea para cambiar el color de la barra (-fx-accent) dinámicamente
+        if (porcentaje < 0.5) {
+            barraProgreso.setStyle("-fx-accent: #66BB6A; -fx-control-inner-background: #EFEBE9;"); // Verde
+            lblPorcentajeComparacion.setText("¡Excelente! Solo llevas el " + String.format("%.0f%%", porcentaje * 100));
+        } else if (porcentaje < 0.9) {
+            barraProgreso.setStyle("-fx-accent: #FFA726; -fx-control-inner-background: #EFEBE9;"); // Naranja
+            lblPorcentajeComparacion.setText("Atención, estás al " + String.format("%.0f%%", porcentaje * 100));
+        } else {
+            barraProgreso.setStyle("-fx-accent: #EF5350; -fx-control-inner-background: #EFEBE9;"); // Rojo
+            lblPorcentajeComparacion.setText("Has superado la media (" + String.format("%.0f%%", porcentaje * 100) + ")");
+        }
+
+        // 5. Texto de valores absolutos
+        lblValoresAbsolutos.setText(String.format("%.1f kg / %.0f kg", impactoMesActual, META_MENSUAL_KG));
     }
 
     private VBox crearEscalonPodio(Object[] datos, int ranking) {
