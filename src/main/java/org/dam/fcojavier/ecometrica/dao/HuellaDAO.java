@@ -42,13 +42,20 @@ public class HuellaDAO extends GenericDAO<Huella>{
             "JOIN a.categoria c " +
             "WHERE h.id_usuario.id = :idUsuario " + // Filtramos por el usuario conectado
             "GROUP BY c.nombre";
-    private static final String HQL_OBTENER_TOP3_ACTIVIDADES = "SELECT a.nombre, SUM(h.valor * c.factorEmision) as impacto " +
+    private static final String HQL_OBTENER_TOP3_ACTIVIDADES = "SELECT a.nombre, SUM(h.valor * c.factorEmision) as impacto, a.categoria " + // <-- Añadido a.categoria
             "FROM Huella h " +
             "JOIN h.id_actividad a " +
             "JOIN a.categoria c " +
             "WHERE h.id_usuario.id = :idUsuario " +
-            "GROUP BY a.nombre " +
+            "GROUP BY a.nombre, a.categoria " +
             "ORDER BY impacto DESC";
+    private static final String HQL_OBTENER_IMPACTO_POR_RANGO_FECHAS_Y_CATEGORIA = "SELECT c.nombre, SUM(h.valor * c.factorEmision) " +
+            "FROM Huella h " +
+            "JOIN h.id_actividad a " +
+            "JOIN a.categoria c " +
+            "WHERE h.id_usuario.id = :idUsuario " +
+            "AND h.fecha BETWEEN :inicio AND :fin " +
+            "GROUP BY c.nombre";
 
     public HuellaDAO() {
         super(Huella.class);
@@ -123,6 +130,19 @@ public class HuellaDAO extends GenericDAO<Huella>{
             query.setParameter("idUsuario", idUsuario);
             query.setMaxResults(3);
 
+            return query.list();
+        }
+    }
+
+    /**
+     * Obtiene el impacto por categoría pero FILTRADO por un rango de fechas.
+     */
+    public List<Object[]> obtenerImpactoPorCategoriaYRango(int idUsuario, LocalDate inicio, LocalDate fin) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Query<Object[]> query = session.createQuery(HQL_OBTENER_IMPACTO_POR_RANGO_FECHAS_Y_CATEGORIA, Object[].class);
+            query.setParameter("idUsuario", idUsuario);
+            query.setParameter("inicio", inicio);
+            query.setParameter("fin", fin);
             return query.list();
         }
     }

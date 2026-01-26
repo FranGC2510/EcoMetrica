@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.dam.fcojavier.ecometrica.controllers.InicioController"
+            styleClass="content-area">
+
+    <top>
+        <VBox spacing="5.0">
+            <padding><Insets bottom="20"/></padding>
+            <Label fx:id="lblSaludo" text="Hola, Usuario" styleClass="titulo-app">
+                <font><Font name="System Bold" size="24.0"/></font>
+            </Label>
+            <Label text="Este es tu resumen de impacto ambiental." styleClass="subtitulo"/>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox spacing="30.0">
+            <HBox spacing="20.0">
+                <VBox styleClass="form-panel" HBox.hgrow="ALWAYS" alignment="CENTER" spacing="5" maxWidth="Infinity">
+                    <Label text="Huella Mes Actual" styleClass="label-campo"/>
+                    <Label fx:id="lblHuellaMes" text="0.00 kg" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: -fx-color-primario;"/>
+                    <Label text="CO₂ emitido" style="-fx-text-fill: gray; -fx-font-size: 12px;"/>
+                </VBox>
+
+                <VBox styleClass="form-panel" HBox.hgrow="ALWAYS" alignment="CENTER" spacing="5" maxWidth="Infinity">
+                    <Label text="Total Histórico" styleClass="label-campo"/>
+                    <Label fx:id="lblHuellaTotal" text="0.00 kg" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #3E2723;"/>
+                    <Label text="acumulado desde el registro" style="-fx-text-fill: gray; -fx-font-size: 12px;"/>
+                </VBox>
+
+                <VBox styleClass="form-panel" HBox.hgrow="ALWAYS" alignment="CENTER" spacing="5" maxWidth="Infinity">
+                    <Label text="Último Registro" styleClass="label-campo"/>
+                    <Label fx:id="lblUltimaActividad" text="-" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #3E2723;"/>
+                    <Label fx:id="lblUltimaFecha" text="Sin actividad reciente" style="-fx-text-fill: gray; -fx-font-size: 13px;"/>
+                </VBox>
+            </HBox>
+
+            <VBox styleClass="form-panel" VBox.vgrow="ALWAYS" alignment="TOP_CENTER" spacing="20">
+                <Label text="🏆 Ranking de Mayor Impacto" styleClass="label-titulo-panel"/>
+
+                <HBox fx:id="boxPodium" alignment="BOTTOM_CENTER" spacing="15" prefHeight="180">
+                    <Label text="No hay suficientes datos para el podio..." style="-fx-text-fill: gray; -fx-font-style: italic;"/>
+                </HBox>
+            </VBox>
+
+            <HBox styleClass="form-panel" VBox.vgrow="ALWAYS" alignment="CENTER_LEFT" spacing="25"
+                  style="-fx-border-color: rgba(216, 125, 74, 0.4); -fx-border-width: 2; -fx-background-color: white;">
+
+                <VBox alignment="CENTER" spacing="5" minWidth="130">
+                    <ImageView fitHeight="65.0" fitWidth="65.0" preserveRatio="true" opacity="0.9">
+                        <image>
+                            <Image url="@logo.png"/>
+                        </image>
+                    </ImageView>
+                    <Label text="Tu Eco-Tip" style="-fx-font-weight: bold; -fx-text-fill: -fx-color-primario; -fx-font-size: 15px;"/>
+                </VBox>
+
+                <VBox style="-fx-background-color: #EFEBE9; -fx-pref-width: 2;" HBox.hgrow="NEVER" maxHeight="80" alignment="CENTER"/>
+
+                <Label fx:id="lblConsejo" text="Cargando recomendación..."
+                       wrapText="true" maxWidth="Infinity" HBox.hgrow="ALWAYS"
+                       textAlignment="CENTER" alignment="CENTER"
+                       style="-fx-font-size: 22px; -fx-text-fill: #3E2723; -fx-font-weight: normal; -fx-padding: 0 20 0 0;"/>
+            </HBox>
+        </VBox>
+    </center>
+</BorderPane>

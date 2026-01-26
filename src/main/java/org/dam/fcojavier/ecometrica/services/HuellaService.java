@@ -128,4 +128,8 @@ public class HuellaService {
     public List<Object[]> obtenerTop3Actividades(Usuario usuario) {
         return huellaDAO.obtenerTop3Actividades(usuario.getId());
     }
+
+    public List<Object[]> obtenerEstadisticasPorCategoriaYRango(Usuario usuario, LocalDate inicio, LocalDate fin) {
+        return huellaDAO.obtenerImpactoPorCategoriaYRango(usuario.getId(), inicio, fin);
+    }
 }

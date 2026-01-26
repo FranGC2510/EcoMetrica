@@ -29,11 +29,9 @@ public class MainController {
         Usuario usuario = Sesion.getInstancia().getUsuarioLogueado();
 
         if (usuario != null) {
-            System.out.println("Acceso autorizado.");
+            System.out.println("Usuario logueado: " + usuario.getNombre());
             lblBienvenida.setText("Hola, " + usuario.getNombre());
-        } else {
-            // Seguridad: Si alguien intenta entrar sin login, fuera.
-            System.out.println("Acceso no autorizado. Sin sesión.");
+            cargarPantalla("InicioView.fxml");
         }
     }
 
@@ -67,7 +65,13 @@ public class MainController {
     }
 
     @FXML
-    public void onMenuResumenClick(ActionEvent event) {
-        cargarPantalla("ResumenView.fxml");
+    public void onMenuInicioClick(ActionEvent event) {
+        System.out.println("Ir al inicio");
+        cargarPantalla("InicioView.fxml");
+    }
+    @FXML
+    public void onMenuEstadisticasClick(ActionEvent event) {
+        System.out.println("Ir a estadísticas");
+        cargarPantalla("EstadisticasView.fxml");
     }
 }

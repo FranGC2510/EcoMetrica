@@ -583,3 +583,140 @@
 .date-picker-popup .next-month {
     -fx-text-fill: #CFD8DC;
 }
+
+/* ==============================================
+   ESTILOS PERSONALIZADOS PARA GRÁFICOS (Charts)
+   ============================================== */
+
+/* 1. CONFIGURACIÓN GENERAL */
+.chart {
+    -fx-padding: 10px;
+    -fx-background-color: transparent;
+}
+
+.chart-content {
+    -fx-padding: 10px;
+}
+
+/* Fondo del área de dibujo transparente para que se vea limpio */
+.chart-plot-background {
+    -fx-background-color: transparent;
+}
+
+/* 2. PALETA DE COLORES CORPORATIVA
+   Sobrescribimos el orden de colores por defecto para PieChart y BarChart.
+   Usamos tus tonos: Naranja, Marrón, Crema, etc.
+*/
+
+/* Serie 1: Tu Naranja Principal (Ideal para la barra única o el trozo más grande) */
+.default-color0.chart-pie,
+.default-color0.chart-bar-filled {
+    -fx-pie-color: #D87D4A;
+    -fx-bar-fill: #D87D4A;
+}
+
+/* Serie 2: Marrón Café Oscuro (Contraste fuerte) */
+.default-color1.chart-pie,
+.default-color1.chart-bar-filled {
+    -fx-pie-color: #3E2723;
+    -fx-bar-fill: #3E2723;
+}
+
+/* Serie 3: Naranja Secundario (Más suave) */
+.default-color2.chart-pie,
+.default-color2.chart-bar-filled {
+    -fx-pie-color: #FBAF85;
+    -fx-bar-fill: #FBAF85;
+}
+
+/* Serie 4: Marrón Tierra Medio */
+.default-color3.chart-pie,
+.default-color3.chart-bar-filled {
+    -fx-pie-color: #8D6E63;
+    -fx-bar-fill: #8D6E63;
+}
+
+/* Serie 5: Gris/Beige Cálido (Para no saturar) */
+.default-color4.chart-pie,
+.default-color4.chart-bar-filled {
+    -fx-pie-color: #A1887F;
+    -fx-bar-fill: #A1887F;
+}
+
+/* Serie 6: Naranja Muy Pálido */
+.default-color5.chart-pie,
+.default-color5.chart-bar-filled {
+    -fx-pie-color: #FFCCBC;
+    -fx-bar-fill: #FFCCBC;
+}
+
+/* 3. ESTILIZACIÓN DE TEXTOS Y EJES */
+
+/* Título del gráfico (si lo usaras) */
+.chart-title {
+    -fx-text-fill: #3E2723;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+/* Leyenda (Legend) */
+.chart-legend {
+    -fx-background-color: transparent;
+    -fx-padding: 10px;
+}
+.chart-legend-item {
+    -fx-text-fill: #5D4037; /* Texto marrón */
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+/* Símbolo de la leyenda */
+.chart-legend-item-symbol {
+    -fx-background-radius: 50%; /* Círculos en vez de cuadrados en la leyenda */
+}
+
+/* Ejes (Axis) - Solo para BarChart */
+.axis {
+    -fx-tick-label-fill: #5D4037; /* Color de los números/meses */
+    -fx-font-size: 11px;
+    -fx-font-family: 'Segoe UI', sans-serif;
+}
+
+.axis-label {
+    -fx-text-fill: #8D6E63; /* Color del nombre del eje (ej: "kg CO2") */
+    -fx-font-size: 12px;
+}
+
+/* Líneas de la cuadrícula (Grid) - Las hacemos muy sutiles */
+.chart-vertical-grid-lines,
+.chart-horizontal-grid-lines {
+    -fx-stroke: #EFEBE9; /* Casi invisible */
+    -fx-stroke-dash-array: 4 4; /* Punteada */
+}
+
+/* Etiquetas sobre el gráfico de tarta */
+.chart-pie-label {
+    -fx-fill: #3E2723;
+    -fx-font-size: 11px;
+}
+
+/* ==============================================
+   ESTILOS PERSONALIZADOS PARA GRÁFICOS
+   ============================================== */
+
+/* ... (tus estilos anteriores de .chart, etc.) ... */
+
+/* ESTILO DE LAS BARRAS */
+.chart-bar {
+    /* TRUCO CLAVE: Limitar el ancho máximo */
+    -fx-max-bar-width: 50px;
+
+    /* Estética: Bordes redondeados solo arriba (efecto moderno) */
+    -fx-background-radius: 8px 8px 0 0;
+    -fx-background-insets: 0;
+}
+
+/* Ajuste para que las categorías no se peguen si hay muchas */
+.chart-plot-background {
+    -fx-background-color: transparent;
+}
+.default-color0.chart-bar { -fx-bar-fill: #D87D4A; } /* Tu color naranja */
