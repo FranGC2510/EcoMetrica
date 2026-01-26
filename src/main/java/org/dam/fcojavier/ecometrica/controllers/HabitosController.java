@@ -3,8 +3,10 @@ package org.dam.fcojavier.ecometrica.controllers;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import org.dam.fcojavier.ecometrica.entities.Actividad;
 import org.dam.fcojavier.ecometrica.entities.Categoria;
 import org.dam.fcojavier.ecometrica.entities.Habito;
@@ -26,11 +28,15 @@ public class HabitosController {
     @FXML private ComboBox<String> cbTipo; // diario, semanal...
     @FXML private DatePicker dpUltimaFecha;
     @FXML private Label lblMensaje;
+    @FXML private Button btnGuardar;
+    @FXML private Button btnEliminar;
+
+    private Habito habitoSeleccionado = null;
 
     // --- TABLA ---
     @FXML private TableView<Habito> tablaHabitos;
     @FXML private TableColumn<Habito, String> colActividad;
-    @FXML private TableColumn<Habito, String> colCategoria;
+    @FXML private TableColumn<Habito, Categoria> colCategoria;
     @FXML private TableColumn<Habito, Integer> colFrecuencia;
     @FXML private TableColumn<Habito, String> colTipo;
     @FXML private TableColumn<Habito, LocalDate> colFecha;
@@ -43,7 +49,46 @@ public class HabitosController {
                 new SimpleStringProperty(cellData.getValue().getActividad().getNombre()));
 
         colCategoria.setCellValueFactory(cellData ->
-                new SimpleStringProperty(cellData.getValue().getActividad().getCategoria().getNombre()));
+                new javafx.beans.property.SimpleObjectProperty<>(cellData.getValue().getActividad().getCategoria())
+        );
+        colCategoria.setCellFactory(column -> new TableCell<Habito, Categoria>() {
+            @Override
+            protected void updateItem(Categoria item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item == null) {
+                    setGraphic(null);
+                    setText(null);
+                } else {
+                    // Creamos el "Chip" (un Label estilizado)
+                    Label lblBadge = new Label(item.getNombre());
+                    lblBadge.getStyleClass().add("badge-base");
+
+                    // Asignamos clase según el nombre de la categoría
+                    String nombreCat = item.getNombre().toLowerCase();
+                    if (nombreCat.contains("transporte")) {
+                        lblBadge.getStyleClass().add("badge-transporte");
+                    } else if (nombreCat.contains("energía") || nombreCat.contains("energia")) {
+                        lblBadge.getStyleClass().add("badge-energia");
+                    } else if (nombreCat.contains("alimentación") || nombreCat.contains("comida")) {
+                        lblBadge.getStyleClass().add("badge-alimentacion");
+                    } else if (nombreCat.contains("agua")) {
+                        lblBadge.getStyleClass().add("badge-agua");
+                    } else if (nombreCat.contains("residuos") || nombreCat.contains("basura")) {
+                        lblBadge.getStyleClass().add("badge-residuos");
+                    } else {
+                        lblBadge.getStyleClass().add("badge-default");
+                    }
+
+                    // Centramos el chip en la celda
+                    HBox container = new HBox(lblBadge);
+                    container.setAlignment(Pos.CENTER);
+
+                    setGraphic(container);
+                    setText(null); // Borramos el texto plano
+                }
+            }
+        });
 
         colFrecuencia.setCellValueFactory(new PropertyValueFactory<>("frecuencia"));
         colTipo.setCellValueFactory(new PropertyValueFactory<>("tipo"));
@@ -89,6 +134,7 @@ public class HabitosController {
         // 4. Listener DE LA TABLA: Para editar al hacer clic
         tablaHabitos.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
+                habitoSeleccionado = newSelection; // <--- IMPORTANTE: Guardamos la referencia
                 cargarHabitoEnFormulario(newSelection);
             }
         });
@@ -119,6 +165,11 @@ public class HabitosController {
         cbTipo.setValue(habito.getTipo());
         dpUltimaFecha.setValue(habito.getUltimaFecha());
 
+        cbCategoria.setDisable(true);
+        cbActividad.setDisable(true);
+
+        btnGuardar.setText("ACTUALIZAR DATOS");
+        btnEliminar.setDisable(false);
         mostrarMensaje("Editando hábito: " + habito.getActividad().getNombre(), "mensaje-info");
     }
 
@@ -164,9 +215,31 @@ public class HabitosController {
     }
 
     @FXML
+    public void onEliminarClick() {
+        if (habitoSeleccionado != null) {
+            // Pregunta de seguridad opcional (recomendado en UX real, pero aquí directo por sencillez)
+            habitoService.eliminarHabito(habitoSeleccionado);
+
+            mostrarMensaje("Hábito eliminado correctamente.", "mensaje-exito");
+
+            refrescarTabla();
+            onLimpiarClick(); // Limpiamos selección
+        }
+    }
+
+    @FXML
     public void onLimpiarClick() {
         limpiarFormulario();
         tablaHabitos.getSelectionModel().clearSelection();
+
+        // Resetear estado
+        habitoSeleccionado = null;
+        btnGuardar.setText("GUARDAR CONFIGURACIÓN");
+        btnEliminar.setDisable(true);
+
+        // Reactivar combos por si estaban bloqueados por edición
+        cbCategoria.setDisable(false);
+        // cbActividad se gestiona solo según la categoría
         lblMensaje.setText("");
     }
 

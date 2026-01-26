@@ -1,10 +1,16 @@
 package org.dam.fcojavier.ecometrica.controllers;
 
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import org.dam.fcojavier.ecometrica.entities.Actividad;
 import org.dam.fcojavier.ecometrica.entities.Categoria;
+import org.dam.fcojavier.ecometrica.entities.Huella;
 import org.dam.fcojavier.ecometrica.entities.Usuario;
 import org.dam.fcojavier.ecometrica.services.HuellaService;
 import org.dam.fcojavier.ecometrica.utils.Sesion;
@@ -16,90 +22,271 @@ public class HuellaController {
 
     private final HuellaService huellaService = new HuellaService();
 
+    // --- FORMULARIO ---
     @FXML private ComboBox<Categoria> cbCategoria;
     @FXML private ComboBox<Actividad> cbActividad;
     @FXML private TextField txtValor;
     @FXML private DatePicker dpFecha;
-    @FXML private Label lblUnidad; // Para mostrar "Km", "kWh", etc.
+    @FXML private Label lblUnidad;
     @FXML private Label lblMensaje;
+    @FXML private Button btnGuardar;
+    @FXML private Button btnEliminar;
+
+    // Variable para controlar si estamos editando
+    private Huella huellaSeleccionada = null;
+
+    // --- TABLA ---
+    @FXML private TableView<Huella> tablaHuellas;
+    @FXML private TableColumn<Huella, LocalDate> colFecha;
+    @FXML private TableColumn<Huella, String> colActividad;
+    @FXML private TableColumn<Huella, Categoria> colCategoria;
+    @FXML private TableColumn<Huella, Double> colValor;
+    @FXML private TableColumn<Huella, String> colUnidad;
+    @FXML private TableColumn<Huella, String> colImpacto; // Columna Calculada (String formateado)
 
     @FXML
     public void initialize() {
+        // 1. Configuración de Columnas
+        configurarTabla();
+
+        // Configuración inicial de combos para que usen la celda inteligente
+        resetearCombo(cbCategoria);
+        resetearCombo(cbActividad);
+        cbActividad.setPromptText("Primero elige categoría...");
+        // 2. Configuración del Formulario
         dpFecha.setValue(LocalDate.now());
+        dpFecha.setDayCellFactory(param -> new DateCell() {
+            @Override
+            public void updateItem(LocalDate date, boolean empty) {
+                super.updateItem(date, empty);
+                setDisable(false);
+                getStyleClass().remove("fecha-futura");
+                if (date.isAfter(LocalDate.now())) {
+                    setDisable(true);
+                    getStyleClass().add("fecha-futura");
+                }
+            }
+        });
+
         cargarCategorias();
 
-        // Listener: Cuando cambia la categoría...
+        // Listener para cascada Categoría -> Actividad
         cbCategoria.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
-                // 1. Limpiamos la selección anterior del segundo combo
                 cbActividad.setValue(null);
                 cbActividad.setPromptText("Selecciona una actividad...");
-
-                // 2. Cargamos las nuevas actividades
                 cargarActividades(newVal);
-
-                // 3. Actualizamos la unidad y habilitamos
                 lblUnidad.setText(newVal.getUnidad());
                 cbActividad.setDisable(false);
             } else {
-                // Si por alguna razón se deselecciona la categoría, bloqueamos todo
                 cbActividad.getItems().clear();
                 cbActividad.setDisable(true);
                 lblUnidad.setText("-");
             }
         });
+
+        tablaHuellas.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                huellaSeleccionada = newSelection;
+                cargarHuellaEnFormulario(newSelection);
+            }
+        });
+
+        // 3. Cargar datos iniciales en la tabla
+        refrescarTabla();
+    }
+
+    private void configurarTabla() {
+        colFecha.setCellValueFactory(new PropertyValueFactory<>("fecha"));
+        colValor.setCellValueFactory(new PropertyValueFactory<>("valor"));
+        colUnidad.setCellValueFactory(new PropertyValueFactory<>("unidad"));
+
+        colActividad.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getId_actividad().getNombre()));
+
+        colCategoria.setCellValueFactory(cellData ->
+                new SimpleObjectProperty<>(cellData.getValue().getId_actividad().getCategoria())
+        );
+        colCategoria.setCellFactory(column -> new TableCell<Huella, Categoria>() {
+            @Override
+            protected void updateItem(Categoria item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item == null) {
+                    setGraphic(null);
+                    setText(null);
+                } else {
+                    // Creamos el Chip
+                    Label lblBadge = new Label(item.getNombre());
+                    lblBadge.getStyleClass().add("badge-base");
+
+                    // Asignamos color según el nombre (incluyendo Agua y Residuos)
+                    String nombreCat = item.getNombre().toLowerCase();
+
+                    if (nombreCat.contains("transporte")) {
+                        lblBadge.getStyleClass().add("badge-transporte");
+                    } else if (nombreCat.contains("energía") || nombreCat.contains("energia")) {
+                        lblBadge.getStyleClass().add("badge-energia");
+                    } else if (nombreCat.contains("alimentación") || nombreCat.contains("comida")) {
+                        lblBadge.getStyleClass().add("badge-alimentacion");
+                    } else if (nombreCat.contains("agua")) {
+                        lblBadge.getStyleClass().add("badge-agua");
+                    } else if (nombreCat.contains("residuos") || nombreCat.contains("basura")) {
+                        lblBadge.getStyleClass().add("badge-residuos");
+                    } else {
+                        lblBadge.getStyleClass().add("badge-default");
+                    }
+
+                    // Centrado
+                    HBox container = new HBox(lblBadge);
+                    container.setAlignment(Pos.CENTER);
+                    setGraphic(container);
+                    setText(null);
+                }
+            }
+        });
+        // COLUMNA CALCULADA: Impacto = Valor * Factor Emisión
+        colImpacto.setCellValueFactory(cellData -> {
+            Huella h = cellData.getValue();
+            double factor = h.getId_actividad().getCategoria().getFactorEmision();
+            double totalCo2 = h.getValor() * factor;
+            return new SimpleStringProperty(String.format("%.2f", totalCo2));
+        });
     }
 
     private void cargarCategorias() {
-        List<Categoria> categorias = huellaService.obtenerTodasCategorias();
-        cbCategoria.setItems(FXCollections.observableArrayList(categorias));
+        cbCategoria.setItems(FXCollections.observableArrayList(huellaService.obtenerTodasCategorias()));
     }
 
     private void cargarActividades(Categoria categoria) {
-        List<Actividad> actividades = huellaService.obtenerActividadesPorCategoria(categoria);
-        cbActividad.setItems(FXCollections.observableArrayList(actividades));
+        cbActividad.setItems(FXCollections.observableArrayList(huellaService.obtenerActividadesPorCategoria(categoria)));
+    }
+
+    private void refrescarTabla() {
+        Usuario usuario = Sesion.getInstancia().getUsuarioLogueado();
+        if (usuario != null) {
+            List<Huella> huellas = huellaService.obtenerHuellasDelUsuario(usuario);
+            tablaHuellas.setItems(FXCollections.observableArrayList(huellas));
+        }
+    }
+
+    private void cargarHuellaEnFormulario(Huella huella) {
+        // 1. Cargamos datos simples
+        dpFecha.setValue(huella.getFecha());
+        txtValor.setText(String.valueOf(huella.getValor()));
+
+        // 2. Cargamos los Combos (Cascada inversa)
+        // Primero seleccionamos la categoría de la actividad de la huella
+        Categoria cat = huella.getId_actividad().getCategoria();
+        cbCategoria.setValue(cat);
+
+        // Al seleccionar categoría, el listener carga las actividades.
+        // Ahora seleccionamos la actividad específica.
+        cbActividad.setValue(huella.getId_actividad());
+        cbActividad.setDisable(false);
+
+        // 3. Cambiamos estado de botones
+        btnGuardar.setText("ACTUALIZAR");
+        btnEliminar.setDisable(false);
+        mostrarMensaje("Editando registro del " + huella.getFecha(), false);
     }
 
     @FXML
     public void onGuardarClick() {
-        // 1. Recogemos datos
         Usuario usuario = Sesion.getInstancia().getUsuarioLogueado();
         Actividad actividad = cbActividad.getValue();
         LocalDate fecha = dpFecha.getValue();
         String valorTexto = txtValor.getText();
 
-        // 2. Validaciones básicas
         if (actividad == null || valorTexto.isEmpty() || fecha == null) {
             mostrarMensaje("Rellena todos los campos.", true);
             return;
         }
 
+        if (fecha.isAfter(LocalDate.now())) {
+            mostrarMensaje("La fecha no puede ser futura.", true);
+            return;
+        }
+
         try {
             double valor = Double.parseDouble(valorTexto);
+            double co2 = 0;
 
-            double co2Generado = huellaService.registrarHuella(usuario, actividad, valor, fecha);
+            if (huellaSeleccionada == null) {
+                // --- MODO CREAR ---
+                co2 = huellaService.registrarHuella(usuario, actividad, valor, fecha);
+                mostrarMensaje(String.format("Registrado. Impacto: %.2f kg CO2", co2), false);
+            } else {
+                // --- MODO EDICIÓN ---
+                huellaSeleccionada.setId_actividad(actividad);
+                huellaSeleccionada.setValor(valor);
+                huellaSeleccionada.setFecha(fecha);
 
-            // FEEDBACK MEJORADO: Mostramos al usuario cuánto ha contaminado
-            // Usamos String.format para mostrar solo 2 decimales
-            String mensaje = String.format("Registrado. Impacto: %.2f kg CO2", co2Generado);
-            mostrarMensaje(mensaje, false);
+                co2 = huellaService.actualizarHuella(huellaSeleccionada);
+                mostrarMensaje(String.format("Actualizado. Impacto: %.2f kg CO2", co2), false);
+            }
 
-            limpiarFormulario();
+            refrescarTabla();
+            onLimpiarClick(); // Limpiamos para volver al estado "Nuevo Registro"
 
         } catch (NumberFormatException e) {
-            mostrarMensaje("El valor debe ser un número (ej: 10.5)", true);
+            mostrarMensaje("El valor debe ser un número.", true);
         } catch (Exception e) {
-            mostrarMensaje("Error al guardar en base de datos.", true);
             e.printStackTrace();
+        }
+    }
+
+    @FXML
+    public void onLimpiarClick() {
+        limpiarFormulario();
+        huellaSeleccionada = null;
+        tablaHuellas.getSelectionModel().clearSelection();
+        btnGuardar.setText("REGISTRAR IMPACTO");
+        btnEliminar.setDisable(true);
+        lblMensaje.setText("");
+    }
+
+    @FXML
+    public void onEliminarClick() {
+        if (huellaSeleccionada != null) {
+            huellaService.eliminarHuella(huellaSeleccionada);
+            mostrarMensaje("Registro eliminado.", false);
+            refrescarTabla();
+            onLimpiarClick();
         }
     }
 
     private void limpiarFormulario() {
         txtValor.clear();
-        cbCategoria.getSelectionModel().clearSelection();
-        cbActividad.getItems().clear();
+        dpFecha.setValue(LocalDate.now());
+
+        // 1. Resetear Categoría (Esto disparará el listener que limpia Actividad)
+        resetearCombo(cbCategoria);
+
+        // 2. Aseguramos que Actividad también quede limpia visualmente y bloqueada
+        resetearCombo(cbActividad);
         cbActividad.setDisable(true);
-        lblUnidad.setText("Unidad");
+        cbActividad.setPromptText("Primero elige categoría..."); // Restauramos el texto inicial
+
+        lblUnidad.setText("-");
+    }
+
+    /**
+     * Método auxiliar para resetear correctamente un ComboBox y que se vea el PromptText.
+     */
+    private <T> void resetearCombo(ComboBox<T> combo) {
+        combo.setValue(null);
+        combo.setButtonCell(new ListCell<T>() {
+            @Override
+            protected void updateItem(T item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null); // Esto hace que se vea el PromptText
+                } else {
+                    setText(item.toString()); // Muestra el nombre normal
+                }
+            }
+        });
     }
 
     private void mostrarMensaje(String texto, boolean esError) {

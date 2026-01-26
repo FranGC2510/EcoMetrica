@@ -11,7 +11,7 @@ import java.util.List;
 public class HabitoDAO extends GenericDAO<Habito>{
     private static final String HQL_BUSCAR_POR_USUARIO = "FROM Habito h " +
             "JOIN FETCH h.actividad a " +
-            "JOIN FETCH a.Categoria " +
+            "JOIN FETCH a.categoria " +
             "WHERE h.usuario.id = :idUsuario";
     public HabitoDAO() {
         super(Habito.class);

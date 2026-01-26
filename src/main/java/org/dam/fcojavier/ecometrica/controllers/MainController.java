@@ -29,6 +29,7 @@ public class MainController {
         Usuario usuario = Sesion.getInstancia().getUsuarioLogueado();
 
         if (usuario != null) {
+            System.out.println("Acceso autorizado.");
             lblBienvenida.setText("Hola, " + usuario.getNombre());
         } else {
             // Seguridad: Si alguien intenta entrar sin login, fuera.
@@ -38,10 +39,8 @@ public class MainController {
 
     @FXML
     public void onCerrarSesion(ActionEvent event) {
-        // 1. Limpiamos la sesión
+        System.out.println("Cerrando sesión, volviendo al login...");
         Sesion.getInstancia().logout();
-
-        // 2. Volvemos al Login
         VistaNavegador.cargarVista(event, "views/Login.fxml");
     }
 
@@ -56,13 +55,19 @@ public class MainController {
     }
 
     @FXML
-    public void onMenuAnadirClick(ActionEvent event) {
-        cargarPantalla("HuellaForm.fxml");
+    public void onMenuHuellasClick(ActionEvent event) {
+        System.out.println("Ir a gestión de huellas");
+        cargarPantalla("HuellaView.fxml");
     }
 
     @FXML
     public void onMenuHabitosClick(ActionEvent event) {
         System.out.println("Ir a gestión de hábitos");
         cargarPantalla("HabitosView.fxml");
+    }
+
+    @FXML
+    public void onMenuResumenClick(ActionEvent event) {
+        cargarPantalla("ResumenView.fxml");
     }
 }

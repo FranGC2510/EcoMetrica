@@ -68,4 +68,8 @@ public class HabitoService {
         // 3. Delegar al DAO la decisión de Insertar o Actualizar
         habitoDAO.saveOrUpdate(habito);
     }
+
+    public void eliminarHabito(Habito habito) {
+        habitoDAO.delete(habito);
+    }
 }
