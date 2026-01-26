@@ -65,4 +65,9 @@ public class MainController {
         System.out.println("Ir a gestión de hábitos");
         cargarPantalla("HabitosView.fxml");
     }
+
+    @FXML
+    public void onMenuResumenClick(ActionEvent event) {
+        cargarPantalla("ResumenView.fxml");
+    }
 }

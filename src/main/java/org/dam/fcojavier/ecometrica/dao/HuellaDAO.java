@@ -42,6 +42,13 @@ public class HuellaDAO extends GenericDAO<Huella>{
             "JOIN a.categoria c " +
             "WHERE h.id_usuario.id = :idUsuario " + // Filtramos por el usuario conectado
             "GROUP BY c.nombre";
+    private static final String HQL_OBTENER_TOP3_ACTIVIDADES = "SELECT a.nombre, SUM(h.valor * c.factorEmision) as impacto " +
+            "FROM Huella h " +
+            "JOIN h.id_actividad a " +
+            "JOIN a.categoria c " +
+            "WHERE h.id_usuario.id = :idUsuario " +
+            "GROUP BY a.nombre " +
+            "ORDER BY impacto DESC";
 
     public HuellaDAO() {
         super(Huella.class);
@@ -106,6 +113,16 @@ public class HuellaDAO extends GenericDAO<Huella>{
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<Object[]> query = session.createQuery(HQL_OBTENER_MEDIA_POR_CATEGORIA, Object[].class);
             query.setParameter("idUsuario", idUsuario);
+            return query.list();
+        }
+    }
+
+    public List<Object[]> obtenerTop3Actividades(int idUsuario) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            Query<Object[]> query = session.createQuery(HQL_OBTENER_TOP3_ACTIVIDADES, Object[].class);
+            query.setParameter("idUsuario", idUsuario);
+            query.setMaxResults(3);
+
             return query.list();
         }
     }

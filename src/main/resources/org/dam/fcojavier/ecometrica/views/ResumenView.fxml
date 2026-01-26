@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.dam.fcojavier.ecometrica.controllers.ResumenController"
+            styleClass="content-area">
+
+    <top>
+        <VBox spacing="15.0">
+            <padding><Insets bottom="15"/></padding>
+
+            <HBox alignment="CENTER_LEFT" spacing="20.0">
+                <Label text="Resumen General" styleClass="titulo-app">
+                    <font><Font name="System Bold" size="24.0"/></font>
+                </Label>
+
+                <Label maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+
+                <HBox alignment="CENTER_RIGHT" spacing="10.0">
+                    <Label text="Desde:"/>
+                    <DatePicker fx:id="dpInicio" prefWidth="120"/>
+                    <Label text="Hasta:"/>
+                    <DatePicker fx:id="dpFin" prefWidth="120"/>
+                    <Button text="Filtrar" onAction="#onFiltrarClick" styleClass="btn-primary"/>
+                </HBox>
+            </HBox>
+
+            <HBox spacing="20.0">
+                <VBox style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);"
+                      spacing="5" alignment="CENTER" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+                    <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
+                    <Label text="Tu Huella (Periodo)" style="-fx-text-fill: gray; -fx-font-size: 14px;"/>
+                    <Label fx:id="lblHuellaPeriodo" text="0.00 kg" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: -fx-color-primario;"/>
+                </VBox>
+
+                <VBox style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);"
+                      spacing="5" alignment="CENTER" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+                    <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
+                    <Label text="Total Histórico" style="-fx-text-fill: gray; -fx-font-size: 14px;"/>
+                    <Label fx:id="lblHuellaHistorica" text="0.00 kg" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #3E2723;"/>
+                </VBox>
+
+                <VBox style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);"
+                      spacing="5" alignment="CENTER" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+                    <padding><Insets top="15" right="15" bottom="15" left="15"/></padding>
+                    <Label text="Media Comunidad (Año)" style="-fx-text-fill: gray; -fx-font-size: 14px;"/>
+                    <Label fx:id="lblMediaComunidad" text="Calculando..." style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #3E2723;"/>
+                </VBox>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <HBox spacing="20.0">
+            <padding><Insets top="10" bottom="10"/></padding>
+
+            <VBox style="-fx-background-color: white; -fx-background-radius: 10;" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+                <Label text="Distribución por Categoría" style="-fx-font-weight: bold; -fx-padding: 10 0 0 15;"/>
+                <PieChart fx:id="pieChart" legendSide="BOTTOM" VBox.vgrow="ALWAYS"/>
+            </VBox>
+
+            <VBox style="-fx-background-color: white; -fx-background-radius: 10;" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+                <Label text="Comparativa: Tú vs Comunidad (Media)" style="-fx-font-weight: bold; -fx-padding: 10 0 0 15;"/>
+                <BarChart fx:id="barChart" legendSide="BOTTOM" VBox.vgrow="ALWAYS">
+                    <xAxis>
+                        <CategoryAxis label="Categoría" />
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis label="kg CO₂" />
+                    </yAxis>
+                </BarChart>
+            </VBox>
+        </HBox>
+    </center>
+
+    <bottom>
+        <HBox spacing="20.0" prefHeight="150.0">
+            <padding><Insets top="10"/></padding>
+
+            <VBox style="-fx-background-color: white; -fx-background-radius: 10;" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+                <padding><Insets top="10" right="15" bottom="10" left="15"/></padding>
+                <Label text="Top 3 Actividades Más Contaminantes" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                <VBox fx:id="boxTop3" spacing="5" alignment="CENTER_LEFT" VBox.vgrow="ALWAYS">
+                    <Label text="No hay datos suficientes..." style="-fx-text-fill: gray;"/>
+                </VBox>
+            </VBox>
+
+            <VBox style="-fx-background-color: white; -fx-background-radius: 10;" HBox.hgrow="ALWAYS" maxWidth="Infinity">
+                <padding><Insets top="10" right="15" bottom="10" left="15"/></padding>
+                <Label text="Eco-Consejo Inteligente" style="-fx-font-weight: bold; -fx-font-size: 14px;"/>
+                <Label fx:id="lblRecomendacion" text="Registra más hábitos para recibir consejos personalizados."
+                       wrapText="true" VBox.vgrow="ALWAYS" alignment="TOP_LEFT" style="-fx-padding: 5 0 0 0;"/>
+            </VBox>
+        </HBox>
+    </bottom>
+
+</BorderPane>

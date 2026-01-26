@@ -124,4 +124,8 @@ public class HuellaService {
     public List<Object[]> obtenerMediaImpactoUsuario(Usuario usuario) {
         return huellaDAO.obtenerMediaImpactoPorCategoria(usuario.getId());
     }
+
+    public List<Object[]> obtenerTop3Actividades(Usuario usuario) {
+        return huellaDAO.obtenerTop3Actividades(usuario.getId());
+    }
 }

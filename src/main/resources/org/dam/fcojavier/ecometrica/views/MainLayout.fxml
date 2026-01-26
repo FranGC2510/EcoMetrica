@@ -25,7 +25,7 @@
                 </VBox.margin>
             </Label>
 
-            <Button text="Resumen" maxWidth="Infinity" styleClass="btn-menu"/>
+            <Button text="Resumen" onAction="#onMenuResumenClick" maxWidth="Infinity" styleClass="btn-menu"/>
             <Button text="Mis Huellas" onAction="#onMenuHuellasClick" maxWidth="Infinity" styleClass="btn-menu"/>
             <Button text="Mis Hábitos" onAction="#onMenuHabitosClick" maxWidth="Infinity" styleClass="btn-menu"/>
 

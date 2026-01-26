@@ -13,6 +13,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.layout.StackPane?>
 <BorderPane xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.dam.fcojavier.ecometrica.controllers.HabitosController"
@@ -29,47 +32,54 @@
     </top>
 
     <left>
-        <VBox spacing="15.0" styleClass="login-container" maxWidth="300.0">
+        <VBox spacing="15.0" styleClass="form-panel" maxWidth="350.0">
             <padding>
-                <Insets top="20" right="20" bottom="20" left="20"/>
+                <Insets top="25" right="25" bottom="25" left="25"/>
             </padding>
 
-            <Label text="Editar Hábito" style="-fx-font-weight: bold; -fx-font-size: 16px;"/>
+            <Label text="Configurar Hábito" styleClass="label-titulo-panel"/>
 
             <VBox spacing="5">
-                <Label text="Categoría"/>
+                <Label text="Categoría" styleClass="label-campo"/>
                 <ComboBox fx:id="cbCategoria" promptText="Selecciona..." maxWidth="Infinity"/>
             </VBox>
 
             <VBox spacing="5">
-                <Label text="Actividad"/>
+                <Label text="Actividad" styleClass="label-campo"/>
                 <ComboBox fx:id="cbActividad" promptText="Primero categoría..." disable="true" maxWidth="Infinity"/>
             </VBox>
 
             <HBox spacing="10">
                 <VBox spacing="5" HBox.hgrow="ALWAYS">
-                    <Label text="Frecuencia"/>
+                    <Label text="Frecuencia" styleClass="label-campo"/>
                     <TextField fx:id="txtFrecuencia" promptText="Ej: 3"/>
                 </VBox>
                 <VBox spacing="5" HBox.hgrow="ALWAYS">
-                    <Label text="Tipo"/>
+                    <Label text="Tipo" styleClass="label-campo"/>
                     <ComboBox fx:id="cbTipo" promptText="Semanal" maxWidth="Infinity"/>
                 </VBox>
             </HBox>
 
             <VBox spacing="5">
-                <Label text="Última vez realizado"/>
+                <Label text="Última vez realizado" styleClass="label-campo"/>
                 <DatePicker fx:id="dpUltimaFecha" maxWidth="Infinity"/>
             </VBox>
 
-            <Label fx:id="lblMensaje" wrapText="true"/>
+            <Label fx:id="lblMensaje" wrapText="true" minHeight="20"/>
 
-            <VBox spacing="10">
-                <Button fx:id="btnGuardar" text="GUARDAR CONFIGURACIÓN" onAction="#onGuardarClick" styleClass="btn-primary" maxWidth="Infinity"/>
+            <VBox spacing="15">
+                <Button fx:id="btnGuardar" text="GUARDAR HÁBITO" onAction="#onGuardarClick"
+                        defaultButton="true" styleClass="btn-primary"
+                        maxWidth="Infinity" style="-fx-font-size: 14px; -fx-padding: 12;"/>
 
                 <HBox spacing="10">
-                    <Button fx:id="btnEliminar" text="Eliminar" onAction="#onEliminarClick" style="-fx-background-color: #D32F2F; -fx-text-fill: white;" maxWidth="Infinity" HBox.hgrow="ALWAYS" disable="true"/>
-                    <Button text="Limpiar" onAction="#onLimpiarClick" styleClass="btn-flat" maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="btnEliminar" text="Eliminar" onAction="#onEliminarClick"
+                            styleClass="btn-danger-outline"
+                            maxWidth="Infinity" HBox.hgrow="ALWAYS" disable="true"/>
+
+                    <Button text="Cancelar" onAction="#onLimpiarClick"
+                            styleClass="btn-outline"
+                            maxWidth="Infinity" HBox.hgrow="ALWAYS"/>
                 </HBox>
             </VBox>
         </VBox>
@@ -78,19 +88,43 @@
     <center>
         <VBox>
             <padding><Insets left="20"/></padding>
-            <TableView fx:id="tablaHabitos" VBox.vgrow="ALWAYS">
-                <columns>
-                    <TableColumn fx:id="colCategoria" text="Categoría" prefWidth="100"/>
-                    <TableColumn fx:id="colActividad" text="Actividad" prefWidth="150"/>
-                    <TableColumn fx:id="colFrecuencia" text="Frecuencia" prefWidth="80"/>
-                    <TableColumn fx:id="colTipo" text="Periodo" prefWidth="100"/>
-                    <TableColumn fx:id="colFecha" text="Última Fecha" prefWidth="100"/>
-                </columns>
-                <columnResizePolicy>
-                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
-                </columnResizePolicy>
-            </TableView>
-            <Label text="* Selecciona una fila para editarla" style="-fx-font-style: italic; -fx-text-fill: gray;">
+
+            <Label text="Mis Hábitos Configurados" styleClass="label-titulo-panel">
+                <VBox.margin><Insets bottom="10"/></VBox.margin>
+            </Label>
+
+            <StackPane VBox.vgrow="ALWAYS">
+
+                <VBox styleClass="placeholder-container" spacing="5" alignment="CENTER" opacity="0.6">
+                    <ImageView fitHeight="200.0" fitWidth="280.0" preserveRatio="true">
+                        <image>
+                            <Image url="@logo.png"/>
+                        </image>
+                    </ImageView>
+
+                    <Label text="Eco-Consejo:" styleClass="placeholder-titulo"/>
+                    <Label text="Cuantos más hábitos registres, más precisa será tu huella."
+                           styleClass="placeholder-subtitulo" wrapText="true" maxWidth="350"/>
+                </VBox>
+
+                <TableView fx:id="tablaHabitos" style="-fx-background-color: transparent;">
+                    <columns>
+                        <TableColumn fx:id="colCategoria" text="Categoría" prefWidth="100"/>
+                        <TableColumn fx:id="colActividad" text="Actividad" prefWidth="150" style="-fx-alignment: CENTER-LEFT;"/>
+                        <TableColumn fx:id="colFrecuencia" text="Frecuencia" prefWidth="80"/>
+                        <TableColumn fx:id="colTipo" text="Periodo" prefWidth="100"/>
+                        <TableColumn fx:id="colFecha" text="Última Fecha" prefWidth="100"/>
+                    </columns>
+
+                    <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                    </columnResizePolicy>
+
+                </TableView>
+
+            </StackPane>
+
+            <Label text="* Selecciona una fila para editar o eliminar un hábito." style="-fx-font-style: italic; -fx-text-fill: gray; -fx-font-size: 12px;">
                 <VBox.margin><Insets top="5"/></VBox.margin>
             </Label>
         </VBox>
