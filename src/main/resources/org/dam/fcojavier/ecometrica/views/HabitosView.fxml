@@ -32,7 +32,7 @@
     </top>
 
     <left>
-        <VBox spacing="15.0" styleClass="form-panel" maxWidth="350.0">
+        <VBox spacing="15.0" styleClass="form-panel" prefWidth="350.0">
             <padding>
                 <Insets top="25" right="25" bottom="25" left="25"/>
             </padding>

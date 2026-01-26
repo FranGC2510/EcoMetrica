@@ -1,10 +1,13 @@
 package org.dam.fcojavier.ecometrica.controllers;
 
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import org.dam.fcojavier.ecometrica.entities.Actividad;
 import org.dam.fcojavier.ecometrica.entities.Categoria;
 import org.dam.fcojavier.ecometrica.entities.Huella;
@@ -36,7 +39,7 @@ public class HuellaController {
     @FXML private TableView<Huella> tablaHuellas;
     @FXML private TableColumn<Huella, LocalDate> colFecha;
     @FXML private TableColumn<Huella, String> colActividad;
-    @FXML private TableColumn<Huella, String> colCategoria;
+    @FXML private TableColumn<Huella, Categoria> colCategoria;
     @FXML private TableColumn<Huella, Double> colValor;
     @FXML private TableColumn<Huella, String> colUnidad;
     @FXML private TableColumn<Huella, String> colImpacto; // Columna Calculada (String formateado)
@@ -98,14 +101,50 @@ public class HuellaController {
         colValor.setCellValueFactory(new PropertyValueFactory<>("valor"));
         colUnidad.setCellValueFactory(new PropertyValueFactory<>("unidad"));
 
-        // Propiedades anidadas (Huella -> Actividad -> Nombre)
-        // NOTA: Usamos getId_actividad() porque así se llama el getter en tu entidad Huella.java
         colActividad.setCellValueFactory(cellData ->
                 new SimpleStringProperty(cellData.getValue().getId_actividad().getNombre()));
 
         colCategoria.setCellValueFactory(cellData ->
-                new SimpleStringProperty(cellData.getValue().getId_actividad().getCategoria().getNombre()));
+                new SimpleObjectProperty<>(cellData.getValue().getId_actividad().getCategoria())
+        );
+        colCategoria.setCellFactory(column -> new TableCell<Huella, Categoria>() {
+            @Override
+            protected void updateItem(Categoria item, boolean empty) {
+                super.updateItem(item, empty);
 
+                if (empty || item == null) {
+                    setGraphic(null);
+                    setText(null);
+                } else {
+                    // Creamos el Chip
+                    Label lblBadge = new Label(item.getNombre());
+                    lblBadge.getStyleClass().add("badge-base");
+
+                    // Asignamos color según el nombre (incluyendo Agua y Residuos)
+                    String nombreCat = item.getNombre().toLowerCase();
+
+                    if (nombreCat.contains("transporte")) {
+                        lblBadge.getStyleClass().add("badge-transporte");
+                    } else if (nombreCat.contains("energía") || nombreCat.contains("energia")) {
+                        lblBadge.getStyleClass().add("badge-energia");
+                    } else if (nombreCat.contains("alimentación") || nombreCat.contains("comida")) {
+                        lblBadge.getStyleClass().add("badge-alimentacion");
+                    } else if (nombreCat.contains("agua")) {
+                        lblBadge.getStyleClass().add("badge-agua");
+                    } else if (nombreCat.contains("residuos") || nombreCat.contains("basura")) {
+                        lblBadge.getStyleClass().add("badge-residuos");
+                    } else {
+                        lblBadge.getStyleClass().add("badge-default");
+                    }
+
+                    // Centrado
+                    HBox container = new HBox(lblBadge);
+                    container.setAlignment(Pos.CENTER);
+                    setGraphic(container);
+                    setText(null);
+                }
+            }
+        });
         // COLUMNA CALCULADA: Impacto = Valor * Factor Emisión
         colImpacto.setCellValueFactory(cellData -> {
             Huella h = cellData.getValue();
