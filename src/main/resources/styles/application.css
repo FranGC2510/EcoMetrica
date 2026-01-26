@@ -720,3 +720,20 @@
     -fx-background-color: transparent;
 }
 .default-color0.chart-bar { -fx-bar-fill: #D87D4A; } /* Tu color naranja */
+
+/* Estilo para la ProgressBar del Dashboard */
+.progress-bar {
+    -fx-border-width: 0;
+    -fx-background-radius: 10; /* Borde redondeado contenedor */
+}
+
+.progress-bar .track {
+    -fx-background-color: #EFEBE9; /* Color de fondo (gris clarito) */
+    -fx-background-radius: 10;
+}
+
+.progress-bar .bar {
+    -fx-background-radius: 10; /* Borde redondeado de la barra de color */
+    -fx-background-insets: 0;
+    /* El color (-fx-accent) lo controlamos desde el Java para cambiarlo dinámicamente */
+}
