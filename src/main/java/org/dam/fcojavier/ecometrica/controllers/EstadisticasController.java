@@ -11,11 +11,14 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.FileChooser;
 import org.dam.fcojavier.ecometrica.entities.Categoria;
 import org.dam.fcojavier.ecometrica.entities.Usuario;
 import org.dam.fcojavier.ecometrica.services.HuellaService;
+import org.dam.fcojavier.ecometrica.services.ReporteService;
 import org.dam.fcojavier.ecometrica.utils.Sesion;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
@@ -26,6 +29,7 @@ import java.util.Map;
 public class EstadisticasController {
 
     private final HuellaService huellaService = new HuellaService();
+    private final ReporteService reporteService = new ReporteService();
 
     @FXML private HBox panelDatos;
     @FXML private VBox panelSinDatos;
@@ -187,6 +191,51 @@ public class EstadisticasController {
         cargarBarChartCategorias(usuario, inicio, fin);
     }
 
+    @FXML
+    public void onExportarPdfClick() {
+        // 1. Validación de seguridad (Panel vacío)
+        if (panelSinDatos.isVisible()) {
+            mostrarAlerta(Alert.AlertType.WARNING, "Sin datos", "No hay datos visibles para generar el reporte.");
+            return;
+        }
+
+        // 2. Configurar el Selector de Archivos
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Guardar Reporte de Impacto");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivos PDF", "*.pdf"));
+
+        // Nombre sugerido: "Reporte_Impacto_01-2026.pdf"
+        String fechaStr = LocalDate.now().format(DateTimeFormatter.ofPattern("MM-yyyy"));
+        fileChooser.setInitialFileName("Reporte_Impacto_" + fechaStr + ".pdf");
+
+        // 3. Abrir ventana de guardar
+        // Usamos 'panelDatos' para obtener la ventana, ya que sabemos que está visible
+        javafx.stage.Stage stage = (javafx.stage.Stage) panelDatos.getScene().getWindow();
+        File archivoDestino = fileChooser.showSaveDialog(stage);
+
+        if (archivoDestino != null) {
+            try {
+                // A) Recopilar los datos necesarios
+                Usuario usuario = Sesion.getInstancia().getUsuarioLogueado();
+                LocalDate inicio = dpInicio.getValue();
+                LocalDate fin = dpFin.getValue();
+
+                // Pedimos los datos frescos al servicio
+                List<Object[]> datos = huellaService.obtenerEstadisticasPorCategoriaYRango(usuario, inicio, fin);
+
+                // B) LLAMAR AL SERVICIO DE REPORTE (Aquí ocurre la magia)
+                reporteService.generarReporteEstadisticas(archivoDestino, usuario, inicio, fin, datos);
+
+                // C) Mensaje de Éxito
+                mostrarAlerta(Alert.AlertType.INFORMATION, "Éxito", "El reporte se ha guardado correctamente en:\n" + archivoDestino.getName());
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                mostrarAlerta(Alert.AlertType.ERROR, "Error", "No se pudo guardar el reporte.\nComprueba que el archivo no esté abierto.");
+            }
+        }
+    }
+
     // Método auxiliar para mantener limpio el código anterior
     private void cargarBarChartCategorias(Usuario usuario, LocalDate inicio, LocalDate fin) {
         barChart.getData().clear();
@@ -234,5 +283,21 @@ public class EstadisticasController {
         public String getCategoria() { return categoria.get(); }
         public String getTotal() { return total.get(); }
         public String getPorcentaje() { return porcentaje.get(); }
+    }
+
+    // Método auxiliar mejorado para evitar repetir el código del initOwner
+    private void mostrarAlerta(Alert.AlertType tipo, String titulo, String mensaje) {
+        Alert alerta = new Alert(tipo);
+        alerta.setTitle(titulo);
+        alerta.setHeaderText(null);
+        alerta.setContentText(mensaje);
+
+        // Corrección del pantallazo negro: Asignamos el dueño
+        if (panelDatos.getScene() != null) {
+            javafx.stage.Stage stage = (javafx.stage.Stage) panelDatos.getScene().getWindow();
+            alerta.initOwner(stage);
+        }
+
+        alerta.showAndWait();
     }
 }

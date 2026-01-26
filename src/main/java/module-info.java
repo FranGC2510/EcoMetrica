@@ -14,6 +14,7 @@ module org.dam.fcojavier.ecometrica {
     requires java.naming; // Necesario para Hibernate en algunos entornos
     requires com.github.librepdf.openpdf; // OpenPDF
     requires jbcrypt;
+    requires java.desktop;
 
     opens org.dam.fcojavier.ecometrica to javafx.fxml;
     opens org.dam.fcojavier.ecometrica.controllers to javafx.fxml, javafx.base;

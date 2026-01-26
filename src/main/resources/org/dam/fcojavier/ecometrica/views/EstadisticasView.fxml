@@ -44,7 +44,15 @@
                     <Label text="Hasta:" styleClass="label-campo"/>
                     <DatePicker fx:id="dpFin" prefWidth="110"/>
 
-                    <Button text="Aplicar" onAction="#onFiltrarClick" styleClass="btn-primary" style="-fx-padding: 5 15;"/>
+                    <HBox alignment="CENTER_RIGHT" spacing="10.0" styleClass="form-panel" style="-fx-padding: 10;">
+
+                        <Button text="Aplicar" onAction="#onFiltrarClick" styleClass="btn-primary" style="-fx-padding: 5 15;"/>
+
+                        <Label text="|" style="-fx-text-fill: #D7CCC8; -fx-padding: 0 5;"/>
+
+                        <Button text="Exportar PDF" onAction="#onExportarPdfClick"
+                                style="-fx-background-color: #5D4037; -fx-text-fill: white; -fx-cursor: hand; -fx-padding: 5 15; -fx-background-radius: 5;"/>
+                    </HBox>
                 </HBox>
             </HBox>
         </VBox>
