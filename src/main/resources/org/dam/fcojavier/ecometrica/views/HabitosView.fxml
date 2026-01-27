@@ -69,8 +69,8 @@
 
             <VBox spacing="15">
                 <Button fx:id="btnGuardar" text="GUARDAR HÁBITO" onAction="#onGuardarClick"
-                        defaultButton="true" styleClass="btn-primary"
-                        maxWidth="Infinity" style="-fx-font-size: 14px; -fx-padding: 12;"/>
+                        defaultButton="true" styleClass="btn-primary-large"
+                        maxWidth="Infinity"/>
 
                 <HBox spacing="10">
                     <Button fx:id="btnEliminar" text="Eliminar" onAction="#onEliminarClick"
@@ -107,10 +107,10 @@
                            styleClass="placeholder-subtitulo" wrapText="true" maxWidth="350"/>
                 </VBox>
 
-                <TableView fx:id="tablaHabitos" style="-fx-background-color: transparent;">
+                <TableView fx:id="tablaHabitos" styleClass="table-view-transparent">
                     <columns>
                         <TableColumn fx:id="colCategoria" text="Categoría" prefWidth="100"/>
-                        <TableColumn fx:id="colActividad" text="Actividad" prefWidth="150" style="-fx-alignment: CENTER-LEFT;"/>
+                        <TableColumn fx:id="colActividad" text="Actividad" prefWidth="150" styleClass="col-left"/>
                         <TableColumn fx:id="colFrecuencia" text="Frecuencia" prefWidth="80"/>
                         <TableColumn fx:id="colTipo" text="Periodo" prefWidth="100"/>
                         <TableColumn fx:id="colFecha" text="Última Fecha" prefWidth="100"/>
@@ -124,7 +124,7 @@
 
             </StackPane>
 
-            <Label text="* Selecciona una fila para editar o eliminar un hábito." style="-fx-font-style: italic; -fx-text-fill: gray; -fx-font-size: 12px;">
+            <Label text="* Selecciona una fila para editar o eliminar un hábito." styleClass="label-hint">
                 <VBox.margin><Insets top="5"/></VBox.margin>
             </Label>
         </VBox>

@@ -31,32 +31,32 @@
             <HBox spacing="20.0">
                 <VBox styleClass="form-panel" HBox.hgrow="ALWAYS" alignment="CENTER" spacing="5" maxWidth="Infinity">
                     <Label text="Huella Mes Actual" styleClass="label-campo"/>
-                    <Label fx:id="lblHuellaMes" text="0.00 kg" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: -fx-color-primario;"/>
-                    <Label text="CO₂ emitido" style="-fx-text-fill: gray; -fx-font-size: 12px;"/>
+                    <Label fx:id="lblHuellaMes" text="0.00 kg" styleClass="label-huella-mes"/>
+                    <Label text="CO₂ emitido" styleClass="label-subtext"/>
                 </VBox>
 
                 <VBox styleClass="form-panel" HBox.hgrow="ALWAYS" alignment="CENTER" spacing="5" maxWidth="Infinity">
                     <Label text="Total Histórico" styleClass="label-campo"/>
-                    <Label fx:id="lblHuellaTotal" text="0.00 kg" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #3E2723;"/>
-                    <Label text="acumulado desde el registro" style="-fx-text-fill: gray; -fx-font-size: 12px;"/>
+                    <Label fx:id="lblHuellaTotal" text="0.00 kg" styleClass="label-huella-total"/>
+                    <Label text="acumulado desde el registro" styleClass="label-subtext"/>
                 </VBox>
 
                 <VBox styleClass="form-panel" alignment="CENTER_LEFT" spacing="10" HBox.hgrow="ALWAYS">
                     <HBox spacing="10" alignment="CENTER_LEFT">
                         <FontIcon iconLiteral="mdmz-public" styleClass="icono-titulo"/>
-                        <Label text="Tu Huella vs. Media Global" styleClass="label-titulo-panel" style="-fx-font-size: 14px;"/>
+                        <Label text="Tu Huella vs. Media Global" styleClass="label-titulo-panel-small"/>
                     </HBox>
 
                     <ProgressBar fx:id="barraProgreso" progress="0.0" maxWidth="Infinity" prefHeight="15"
-                                 style="-fx-accent: -fx-color-primario; -fx-control-inner-background: #EFEBE9;"/>
+                                 styleClass="progress-bar-custom"/>
 
                     <HBox alignment="CENTER_LEFT" spacing="5">
-                        <Label fx:id="lblPorcentajeComparacion" text="Cargando..." style="-fx-font-weight: bold; -fx-text-fill: -fx-color-primario;"/>
-                        <Label text="de la media mensual sostenible." style="-fx-text-fill: #8D6E63;"/>
+                        <Label fx:id="lblPorcentajeComparacion" text="Cargando..." styleClass="label-porcentaje"/>
+                        <Label text="de la media mensual sostenible." styleClass="label-subtext-brown"/>
                     </HBox>
 
                     <HBox alignment="CENTER_RIGHT">
-                        <Label fx:id="lblValoresAbsolutos" text="0 kg / 350 kg" style="-fx-font-size: 11px; -fx-text-fill: #A1887F;"/>
+                        <Label fx:id="lblValoresAbsolutos" text="0 kg / 350 kg" styleClass="label-valores-absolutos"/>
                     </HBox>
                 </VBox>
             </HBox>
@@ -65,12 +65,11 @@
                 <Label text="Ranking de Mayor Impacto" styleClass="label-titulo-panel"/>
 
                 <HBox fx:id="boxPodium" alignment="BOTTOM_CENTER" spacing="15" prefHeight="180">
-                    <Label text="No hay suficientes datos para el podio..." style="-fx-text-fill: gray; -fx-font-style: italic;"/>
+                    <Label text="No hay suficientes datos para el podio..." styleClass="label-no-data"/>
                 </HBox>
             </VBox>
 
-            <HBox styleClass="form-panel" VBox.vgrow="ALWAYS" alignment="CENTER_LEFT" spacing="25"
-                  style="-fx-border-color: rgba(216, 125, 74, 0.4); -fx-border-width: 2; -fx-background-color: white;">
+            <HBox styleClass="eco-tip-panel" VBox.vgrow="ALWAYS" alignment="CENTER_LEFT" spacing="25">
 
                 <VBox alignment="CENTER" spacing="5" minWidth="130">
                     <ImageView fitHeight="65.0" fitWidth="65.0" preserveRatio="true" opacity="0.9">
@@ -78,15 +77,15 @@
                             <Image url="@logo.png"/>
                         </image>
                     </ImageView>
-                    <Label text="Tu Eco-Tip" style="-fx-font-weight: bold; -fx-text-fill: -fx-color-primario; -fx-font-size: 15px;"/>
+                    <Label text="Tu Eco-Tip" styleClass="label-eco-tip-title"/>
                 </VBox>
 
-                <VBox style="-fx-background-color: #EFEBE9; -fx-pref-width: 2;" HBox.hgrow="NEVER" maxHeight="80" alignment="CENTER"/>
+                <VBox styleClass="separator-vertical-thick" HBox.hgrow="NEVER" maxHeight="80" alignment="CENTER"/>
 
                 <Label fx:id="lblConsejo" text="Cargando recomendación..."
                        wrapText="true" maxWidth="Infinity" HBox.hgrow="ALWAYS"
                        textAlignment="CENTER" alignment="CENTER"
-                       style="-fx-font-size: 22px; -fx-text-fill: #3E2723; -fx-font-weight: normal; -fx-padding: 0 20 0 0;"/>
+                       styleClass="label-eco-tip-text"/>
             </HBox>
         </VBox>
     </center>
