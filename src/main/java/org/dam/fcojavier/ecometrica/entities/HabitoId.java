@@ -6,6 +6,9 @@ import jakarta.persistence.Embeddable;
 import java.io.Serializable;
 import java.util.Objects;
 
+/**
+ * Clave primaria compuesta para la entidad Habito.
+ */
 @Embeddable
 public class HabitoId implements Serializable {
     private static final long serialVersionUID = 3149159602303497540L;
@@ -15,18 +18,16 @@ public class HabitoId implements Serializable {
     @Column(name = "id_actividad", nullable = false)
     private Integer idActividad;
 
+    // Getters, Setters, Equals y HashCode obligatorios para @Embeddable
     public Integer getIdUsuario() {
         return idUsuario;
     }
-
     public void setIdUsuario(Integer idUsuario) {
         this.idUsuario = idUsuario;
     }
-
     public Integer getIdActividad() {
         return idActividad;
     }
-
     public void setIdActividad(Integer idActividad) {
         this.idActividad = idActividad;
     }

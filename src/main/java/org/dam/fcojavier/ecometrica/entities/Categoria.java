@@ -6,6 +6,9 @@ import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * Representa las categorías de impacto ambiental (Transporte, Energía, etc.).
+ */
 @Entity
 @Table(name = "categoria")
 public class Categoria {
@@ -29,50 +32,40 @@ public class Categoria {
     @OneToMany(mappedBy = "idCategoria")
     private Set<Recomendacion> recomendaciones = new LinkedHashSet<>();
 
+    // Getters y Setters
     public Integer getId() {
         return id;
     }
-
     public void setId(Integer id) {
         this.id = id;
     }
-
     public String getNombre() {
         return nombre;
     }
-
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-
     public Double getFactorEmision() {
         return factorEmision;
     }
-
     public void setFactorEmision(Double factorEmision) {
         this.factorEmision = factorEmision;
     }
-
     public String getUnidad() {
         return unidad;
     }
-
     public void setUnidad(String unidad) {
         this.unidad = unidad;
     }
-
     public Set<Actividad> getActividades() {
         return actividades;
     }
-
     public void setActividades(Set<Actividad> actividads) {
         this.actividades = actividads;
     }
-
     public Set<Recomendacion> getRecomendaciones() {
         return recomendaciones;
     }
-
     public void setRecomendaciones(Set<Recomendacion> recomendacions) {
         this.recomendaciones = recomendacions;
     }
@@ -90,6 +83,7 @@ public class Categoria {
     public int hashCode() {
         return Objects.hash(id);
     }
+
     @Override
     public String toString() {
         return nombre;

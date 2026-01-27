@@ -3,7 +3,11 @@ package org.dam.fcojavier.ecometrica.entities;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
+/**
+ * Registro individual de consumo y su impacto de huella de carbono.
+ */
 @Entity
 @Table(name = "huella")
 public class Huella {
@@ -29,52 +33,53 @@ public class Huella {
     @JoinColumn(name = "id_actividad", nullable = false)
     private Actividad id_actividad;
 
+    // Getters y Setters
     public Integer getId_registro() {
         return id_registro;
     }
-
     public void setId_registro(Integer id) {
         this.id_registro = id;
     }
-
     public Double getValor() {
         return valor;
     }
-
     public void setValor(Double valor) {
         this.valor = valor;
     }
-
     public String getUnidad() {
         return unidad;
     }
-
     public void setUnidad(String unidad) {
         this.unidad = unidad;
     }
-
     public LocalDate getFecha() {
         return fecha;
     }
-
     public void setFecha(LocalDate fecha) {
         this.fecha = fecha;
     }
-
     public Usuario getId_usuario() {
         return id_usuario;
     }
-
     public void setId_usuario(Usuario idUsuario) {
         this.id_usuario = idUsuario;
     }
-
     public Actividad getId_actividad() {
         return id_actividad;
     }
-
     public void setId_actividad(Actividad idActividad) {
         this.id_actividad = idActividad;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Huella huella)) return false;
+        return Objects.equals(id_registro, huella.id_registro);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id_registro);
+    }
 }

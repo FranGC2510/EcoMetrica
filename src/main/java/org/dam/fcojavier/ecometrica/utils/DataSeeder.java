@@ -20,81 +20,67 @@ public class DataSeeder {
     private final RecomendacionDAO recomendacionDAO = new RecomendacionDAO();
 
     public void sembrarDatos() {
-        List<Categoria> categoriasExistentes = categoriaDAO.findAll();
-        if (!categoriasExistentes.isEmpty()) {
-            System.out.println(">> DataSeeder: La base de datos ya contiene datos. No se requiere inicialización.");
+        if (!isBaseDeDatosVacia()) {
+            System.out.println(">> DataSeeder: Datos ya presentes. Omitiendo.");
             return;
         }
 
-        System.out.println(">> DataSeeder: Base de datos vacía. Iniciando carga de datos maestros...");
+        System.out.println(">> DataSeeder: Cargando datos maestros...");
 
-        // 1. CREACIÓN DE CATEGORÍAS
+        // 1. Categorías
+        Categoria transporte = crearCat("Transporte", 0.21, "Km");
+        Categoria energia = crearCat("Energía", 0.233, "KWh");
+        Categoria alimentacion = crearCat("Alimentación", 2.5, "Kg");
+        Categoria residuos = crearCat("Residuos", 0.41, "Kg");
+        Categoria agua = crearCat("Agua", 0.35, "m3");
 
-        Categoria catTransporte = createCategoria("Transporte", 0.21, "Km");
-        Categoria catEnergia = createCategoria("Energía", 0.233, "KWh");
-        Categoria catAlimentacion = createCategoria("Alimentación", 2.5, "Kg");
-        Categoria catResiduos = createCategoria("Residuos", 0.41, "Kg");
-        Categoria catAgua = createCategoria("Agua", 0.35, "m3");
+        // 2. Actividades
+        crearAct("Conducir coche", transporte);
+        crearAct("Usar transporte público", transporte);
+        crearAct("Viajar en avión", transporte);
+        crearAct("Consumo eléctrico", energia);
+        crearAct("Consumo de gas", energia);
+        crearAct("Comer carne de res", alimentacion);
+        crearAct("Comer alimentos vegetarianos", alimentacion);
+        crearAct("Generar residuos domésticos", residuos);
+        crearAct("Consumo de agua potable", agua);
 
-        // 2. CREACIÓN DE ACTIVIDADES
+        // 3. Recomendaciones
+        crearRec("Usa bicicleta o camina en distancias cortas", 30.0, transporte);
+        crearRec("Opta por el transporte público en vez del coche", 45.0, transporte);
+        crearRec("Apaga dispositivos eléctricos cuando no los uses", 10.0, energia);
+        crearRec("Reduce el consumo de carne de res", 50.0, alimentacion);
+        crearRec("Recicla residuos para disminuir emisiones", 25.0, residuos);
+        crearRec("Reduce el tiempo de ducha", 5.0, agua);
 
-        createActividad("Conducir coche", catTransporte);
-        createActividad("Usar transporte público", catTransporte);
-        createActividad("Viajar en avión", catTransporte);
-
-        createActividad("Consumo eléctrico", catEnergia);
-        createActividad("Consumo de gas", catEnergia);
-
-        createActividad("Comer carne de res", catAlimentacion);
-        createActividad("Comer alimentos vegetarianos", catAlimentacion);
-
-        createActividad("Generar residuos domésticos", catResiduos);
-
-        createActividad("Consumo de agua potable", catAgua);
-
-        // 3. CREACIÓN DE RECOMENDACIONES
-
-        createRecomendacion("Usa bicicleta o camina en distancias cortas", 30.0, catTransporte);
-        createRecomendacion("Opta por el transporte público en vez del coche", 45.0, catTransporte);
-        createRecomendacion("Compartir coche con compañeros reduce emisiones", 20.0, catTransporte);
-
-        createRecomendacion("Apaga dispositivos eléctricos cuando no los uses", 10.0, catEnergia);
-        createRecomendacion("Usa bombillas LED en lugar de incandescentes", 15.0, catEnergia);
-
-        createRecomendacion("Reduce el consumo de carne de res y opta por vegetales", 50.0, catAlimentacion);
-        createRecomendacion("Compra productos locales y de temporada", 20.0, catAlimentacion);
-
-        createRecomendacion("Recicla residuos para disminuir emisiones", 25.0, catResiduos);
-        createRecomendacion("Reduce el uso de plásticos desechables", 10.0, catResiduos);
-
-        createRecomendacion("Reduce el tiempo de ducha y ahorra agua", 5.0, catAgua);
-
-        System.out.println(">> DataSeeder: Carga de datos completada con éxito.");
+        System.out.println(">> DataSeeder: Proceso finalizado.");
     }
 
-    // --- Métodos Auxiliares para no repetir código ---
+    private boolean isBaseDeDatosVacia() {
+        return categoriaDAO.findAll().isEmpty();
+    }
 
-    private Categoria createCategoria(String nombre, double factor, String unidad) {
+    private Categoria crearCat(String n, double f, String u) {
         Categoria c = new Categoria();
-        c.setNombre(nombre);
-        c.setFactorEmision(factor);
-        c.setUnidad(unidad);
+        c.setNombre(n);
+        c.setFactorEmision(f);
+        c.setUnidad(u);
         categoriaDAO.save(c);
-        return c; // Devolvemos el objeto persistido (con ID) para usarlo en las relaciones
+        return c;
     }
 
-    private void createActividad(String nombre, Categoria cat) {
+    private void crearAct(String n, Categoria c) {
         Actividad a = new Actividad();
-        a.setNombre(nombre);
-        a.setCategoria(cat);
+        a.setNombre(n);
+        a.setCategoria(c);
         actividadDAO.save(a);
     }
 
-    private void createRecomendacion(String descripcion, double impacto, Categoria cat) {
+    private void crearRec(String d, double i, Categoria c) {
         Recomendacion r = new Recomendacion();
-        r.setDescripcion(descripcion);
-        r.setImpactoEstimado(impacto);
-        r.setIdCategoria(cat);
+        r.setDescripcion(d);
+        r.setImpactoEstimado(i);
+        r.setIdCategoria(c);
         recomendacionDAO.save(r);
     }
 }

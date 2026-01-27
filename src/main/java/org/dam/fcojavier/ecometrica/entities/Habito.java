@@ -3,6 +3,7 @@ package org.dam.fcojavier.ecometrica.entities;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Entity
 @Table(name = "habito")
@@ -29,52 +30,53 @@ public class Habito {
     @Column(name = "ultima_fecha", nullable = false)
     private LocalDate ultimaFecha;
 
+    // Getters y Setters
     public HabitoId getId() {
         return id;
     }
-
     public void setId(HabitoId id) {
         this.id = id;
     }
-
     public Usuario getUsuario() {
         return usuario;
     }
-
     public void setUsuario(Usuario idUsuario) {
         this.usuario = idUsuario;
     }
-
     public Actividad getActividad() {
         return actividad;
     }
-
     public void setActividad(Actividad idActividad) {
         this.actividad = idActividad;
     }
-
     public Integer getFrecuencia() {
         return frecuencia;
     }
-
     public void setFrecuencia(Integer frecuencia) {
         this.frecuencia = frecuencia;
     }
-
     public String getTipo() {
         return tipo;
     }
-
     public void setTipo(String tipo) {
         this.tipo = tipo;
     }
-
     public LocalDate getUltimaFecha() {
         return ultimaFecha;
     }
-
     public void setUltimaFecha(LocalDate ultimaFecha) {
         this.ultimaFecha = ultimaFecha;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Habito habito)) return false;
+        return Objects.equals(id, habito.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

@@ -3,7 +3,6 @@ package org.dam.fcojavier.ecometrica.dao;
 import org.dam.fcojavier.ecometrica.utils.HibernateUtil;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import org.hibernate.query.Query;
 
 import java.util.List;
 
@@ -12,67 +11,69 @@ import java.util.List;
  * <T> representa la Entidad (Usuario, Huella, etc.) con la que vamos a trabajar.
  */
 public abstract class GenericDAO<T> {
-    // Necesitamos saber qué clase es T para hacer las consultas
-    private Class<T> entityClass;
+    protected final Class<T> entityClass;
 
     public GenericDAO(Class<T> entityClass) {
         this.entityClass = entityClass;
     }
 
-    // 1. GUARDAR (Create)
+    /**
+     * Guarda una nueva entidad en la base de datos.
+     * @param entity Objeto a persistir.
+     */
     public void save(T entity) {
-        Transaction transaction = null;
-        // Abrimos sesión. El try(...) asegura que se cierre sola al terminar.
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
-            session.persist(entity); // persist = guardar nuevo
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) transaction.rollback(); // Si falla, deshacer cambios
-            e.printStackTrace();
-        }
+        executeInsideTransaction(session -> session.persist(entity));
     }
 
-    // 2. ACTUALIZAR (Update)
+    /**
+     * Actualiza o inserta una entidad (Sincroniza el estado).
+     * @param entity Objeto a actualizar.
+     */
     public void update(T entity) {
-        Transaction transaction = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
-            session.merge(entity); // merge = actualiza si existe
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) transaction.rollback();
-            e.printStackTrace();
-        }
+        executeInsideTransaction(session -> session.merge(entity));
     }
 
-    // 3. BORRAR (Delete)
+    /**
+     * Elimina una entidad de la base de datos.
+     * @param entity Objeto a borrar.
+     */
     public void delete(T entity) {
-        Transaction transaction = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
-            session.remove(entity); // remove = borrar
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) transaction.rollback();
-            e.printStackTrace();
-        }
+        executeInsideTransaction(session -> session.remove(session.contains(entity) ? entity : session.merge(entity)));
     }
 
-    // 4. BUSCAR POR ID (Read One)
+    /**
+     * Busca una entidad por su identificador único.
+     * @param id Identificador de la entidad.
+     * @return La entidad encontrada o null.
+     */
     public T findById(int id) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.get(entityClass, id);
         }
     }
 
-    // 5. BUSCAR TODOS (Read All)
+    /**
+     * Recupera todos los registros de la entidad en la base de datos.
+     * @return Lista de todas las entidades.
+     */
     public List<T> findAll() {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            // HQL: "FROM Usuario", "FROM Huella", etc.
-            String hql = "FROM " + entityClass.getSimpleName();
-            Query<T> query = session.createQuery(hql, entityClass);
-            return query.list();
+            return session.createQuery("FROM " + entityClass.getSimpleName(), entityClass).list();
+        }
+    }
+
+    /**
+     * Método utilitario para envolver operaciones en una transacción segura.
+     */
+    protected void executeInsideTransaction(java.util.function.Consumer<Session> action) {
+        Transaction transaction = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+            action.accept(session);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) transaction.rollback();
+            throw new RuntimeException("Error en operación de base de datos", e);
         }
     }
 }
