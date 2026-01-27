@@ -10,6 +10,7 @@
 <?import javafx.scene.image.Image?>
 
 <?import javafx.scene.control.ProgressBar?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 <BorderPane xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.dam.fcojavier.ecometrica.controllers.InicioController"
@@ -42,7 +43,7 @@
 
                 <VBox styleClass="form-panel" alignment="CENTER_LEFT" spacing="10" HBox.hgrow="ALWAYS">
                     <HBox spacing="10" alignment="CENTER_LEFT">
-                        <Label text="🌎" style="-fx-font-size: 20px;"/>
+                        <FontIcon iconLiteral="mdmz-public" styleClass="icono-titulo"/>
                         <Label text="Tu Huella vs. Media Global" styleClass="label-titulo-panel" style="-fx-font-size: 14px;"/>
                     </HBox>
 
@@ -61,7 +62,7 @@
             </HBox>
 
             <VBox styleClass="form-panel" VBox.vgrow="ALWAYS" alignment="TOP_CENTER" spacing="20">
-                <Label text="🏆 Ranking de Mayor Impacto" styleClass="label-titulo-panel"/>
+                <Label text="Ranking de Mayor Impacto" styleClass="label-titulo-panel"/>
 
                 <HBox fx:id="boxPodium" alignment="BOTTOM_CENTER" spacing="15" prefHeight="180">
                     <Label text="No hay suficientes datos para el podio..." style="-fx-text-fill: gray; -fx-font-style: italic;"/>

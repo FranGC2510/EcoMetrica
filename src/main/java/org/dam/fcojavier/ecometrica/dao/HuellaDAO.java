@@ -40,7 +40,7 @@ public class HuellaDAO extends GenericDAO<Huella>{
             "FROM Huella h " +
             "JOIN h.id_actividad a " +
             "JOIN a.categoria c " +
-            "WHERE h.id_usuario.id = :idUsuario " + // Filtramos por el usuario conectado
+            "WHERE h.id_usuario.id = :idUsuario " +
             "GROUP BY c.nombre";
     private static final String HQL_OBTENER_TOP3_ACTIVIDADES = "SELECT a.nombre, SUM(h.valor * c.factorEmision) as impacto, a.categoria " + // <-- Añadido a.categoria
             "FROM Huella h " +
@@ -56,6 +56,12 @@ public class HuellaDAO extends GenericDAO<Huella>{
             "WHERE h.id_usuario.id = :idUsuario " +
             "AND h.fecha BETWEEN :inicio AND :fin " +
             "GROUP BY c.nombre";
+    private static final String HQL_CALCULO_MEDIA_GLOBAL =
+            "SELECT SUM(h.valor * c.factorEmision), COUNT(DISTINCT h.id_usuario) " +
+                    "FROM Huella h " +
+                    "JOIN h.id_actividad a " +
+                    "JOIN a.categoria c " +
+                    "WHERE h.fecha BETWEEN :inicio AND :fin";
 
     public HuellaDAO() {
         super(Huella.class);
@@ -144,6 +150,41 @@ public class HuellaDAO extends GenericDAO<Huella>{
             query.setParameter("inicio", inicio);
             query.setParameter("fin", fin);
             return query.list();
+        }
+    }
+
+    /**
+     * Calcula la media global en una sola consulta.
+     * Devuelve: (Suma Total de CO2) / (Total de Usuarios distintos)
+     */
+    public Double obtenerMediaMensualGlobal(LocalDate inicio, LocalDate fin) {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+
+            // 1. Ejecutamos la consulta única que devuelve un array de objetos
+            Query<Object[]> query = session.createQuery(HQL_CALCULO_MEDIA_GLOBAL, Object[].class);
+            query.setParameter("inicio", inicio);
+            query.setParameter("fin", fin);
+
+            // 2. Obtenemos el resultado (Object[0] = SUMA, Object[1] = COUNT)
+            Object[] resultado = query.uniqueResult();
+
+            // 3. Validaciones de seguridad para evitar NullPointer
+            if (resultado == null) return 0.0;
+
+            Double sumaTotal = (Double) resultado[0];
+            Long totalUsuarios = (Long) resultado[1];
+
+            // 4. Validación matemática
+            // Si la suma es null (no hay registros) o hay 0 usuarios, devolvemos 0
+            if (sumaTotal == null || totalUsuarios == null || totalUsuarios == 0) {
+                return 0.0;
+            }
+
+            // 5. Devolvemos la media real por persona
+            return sumaTotal / totalUsuarios;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0.0;
         }
     }
 }

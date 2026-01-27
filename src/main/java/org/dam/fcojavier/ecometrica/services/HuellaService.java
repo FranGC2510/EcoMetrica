@@ -9,6 +9,7 @@ import org.dam.fcojavier.ecometrica.entities.Huella;
 import org.dam.fcojavier.ecometrica.entities.Usuario;
 
 import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
 public class HuellaService {
@@ -113,8 +114,12 @@ public class HuellaService {
      * Obtiene la media de la comunidad para comparar.
      * @return Lista de [Categoría, Media]
      */
-    public List<Object[]> obtenerComparativaComunidad() {
-        return huellaDAO.obtenerMediaImpactoComunidad();
+    public Double obtenerMediaComunidadMesActual() {
+        LocalDate hoy = LocalDate.now();
+        LocalDate inicio = hoy.with(TemporalAdjusters.firstDayOfMonth());
+        LocalDate fin = hoy.with(TemporalAdjusters.lastDayOfMonth());
+
+        return huellaDAO.obtenerMediaMensualGlobal(inicio, fin);
     }
 
     /**
