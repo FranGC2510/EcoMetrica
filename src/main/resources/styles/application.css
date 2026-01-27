@@ -1,5 +1,8 @@
 /* application.css - Identidad Visual de EcoMetrica */
 
+/* ==============================================
+   VARIABLES GLOBALES & CONFIGURACIÓN BASE
+   ============================================== */
 .root {
     /* Paleta de Colores Oficial */
     -fx-color-primario: #D87D4A;
@@ -26,6 +29,14 @@
 .label {
     -fx-text-fill: -fx-color-texto;
 }
+
+/* Iconos */
+.icono-titulo {
+    -fx-icon-color: #D87D4A;
+    -fx-icon-size: 28px;
+}
+
+/* --- Botones --- */
 
 /* Botones Principales (Terracota) */
 .btn-primary {
@@ -89,7 +100,7 @@
     -fx-border-color: #D32F2F;
 }
 
-/* Botón Danger Sólido (para otros usos si necesitas) */
+/* Botón Danger Sólido */
 .btn-danger {
     -fx-background-color: -fx-color-error;
     -fx-text-fill: white;
@@ -98,13 +109,14 @@
     -fx-padding: 10 15;
     -fx-cursor: hand;
 }
+
 .btn-danger:hover {
     -fx-background-color: derive(-fx-color-error, -20%);
 }
 
 
 /* ==============================================
-   ESTILOS ESPECÍFICOS (LOGIN Y REGISTRO)
+   VISTAS ESPECÍFICAS: LOGIN Y REGISTRO
    ============================================== */
 
 .login-container {
@@ -127,7 +139,6 @@
     -fx-padding: 0 0 15 0;
 }
 
-/* Campos de texto login (Específico) */
 .password-field {
     -fx-background-color: #F5F5F4;
     -fx-border-color: transparent;
@@ -135,6 +146,7 @@
     -fx-padding: 10;
     -fx-text-fill: -fx-color-texto;
 }
+
 .password-field:focused {
     -fx-background-color: white;
     -fx-border-color: -fx-color-primario;
@@ -146,13 +158,14 @@
     -fx-cursor: hand;
     -fx-font-size: 12px;
 }
+
 .link-text:hover {
     -fx-underline: true;
 }
 
 
 /* ==============================================
-   DASHBOARD SIDEBAR
+   VISTAS ESPECÍFICAS: DASHBOARD SIDEBAR
    ============================================== */
 
 .sidebar {
@@ -193,6 +206,7 @@
     -fx-alignment: CENTER;
     -fx-cursor: hand;
 }
+
 .btn-menu-logout:hover {
     -fx-background-color: -fx-color-error;
     -fx-text-fill: white;
@@ -205,7 +219,7 @@
 
 
 /* ==============================================
-   ESTILOS PARA MENSAJES DE FEEDBACK
+   MENSAJES DE FEEDBACK
    ============================================== */
 .fecha-futura {
     -fx-background-color: derive(-fx-color-error, 170%);
@@ -221,7 +235,7 @@
 
 
 /* ==============================================
-   NUEVO DISEÑO: PANEL FORMULARIO (TARJETA)
+   PANELES Y FORMULARIOS
    ============================================== */
 .form-panel {
     -fx-background-color: #FFFFFF;
@@ -252,67 +266,60 @@
    CONTROLES MODERNOS (ComboBox, DatePicker, TextField)
    ============================================== */
 
-/* 1. ESTILO BASE (La "Caja" cerrada) */
+/* Estilo Base */
 .combo-box, .date-picker, .text-field {
     -fx-background-color: #FFFFFF;
     -fx-background-radius: 8px;
     -fx-border-radius: 8px;
-    -fx-border-color: #D7CCC8; /* Borde suave */
+    -fx-border-color: #D7CCC8;
     -fx-border-width: 1.5px;
-    -fx-padding: 4 8 4 8; /* Espacio interno cómodo */
+    -fx-padding: 4 8 4 8;
     -fx-font-size: 13px;
     -fx-text-fill: #3E2723;
-    /* Transición suave (simulada) */
     -fx-effect: none;
 }
 
-/* Estado HOVER (Al pasar el ratón) */
+/* Hover */
 .combo-box:hover, .date-picker:hover, .text-field:hover {
-    -fx-border-color: #A1887F; /* Borde un poco más oscuro */
+    -fx-border-color: #A1887F;
     -fx-background-color: #FAFAFA;
 }
 
-/* Estado FOCUS (Al hacer clic para escribir/seleccionar) */
+/* Focus */
 .combo-box:focused, .date-picker:focused, .text-field:focused {
     -fx-background-color: #FFFFFF;
-    -fx-border-color: -fx-color-primario; /* Tu Naranja Corporativo */
-    /* Resplandor suave naranja */
+    -fx-border-color: -fx-color-primario;
     -fx-effect: dropshadow(three-pass-box, rgba(216, 125, 74, 0.25), 8, 0, 0, 0);
 }
 
-/* 2. LA FLECHA DEL DESPLEGABLE */
-/* Quitamos el botón gris feo de la derecha */
+/* Flechas (ComboBox / DatePicker) */
 .combo-box .arrow-button, .date-picker .arrow-button {
     -fx-background-color: transparent;
     -fx-background-radius: 0;
-    -fx-padding: 0 10 0 0; /* Ajuste para que no se pegue al borde */
+    -fx-padding: 0 10 0 0;
 }
 
-/* Dibujamos la flecha minimalista */
 .combo-box .arrow, .date-picker .arrow {
-    -fx-background-color: #8D6E63; /* Color café suave */
-    -fx-scale-x: 0.8; /* La hacemos un pelín más pequeña y fina */
+    -fx-background-color: #8D6E63;
+    -fx-scale-x: 0.8;
     -fx-scale-y: 0.8;
 }
 
 .combo-box:hover .arrow, .date-picker:hover .arrow {
-    -fx-background-color: -fx-color-primario; /* Naranja al pasar el ratón */
+    -fx-background-color: -fx-color-primario;
 }
 
-/* 3. LA LISTA DESPLEGABLE (El Popup) */
-/* El contenedor de la lista */
+/* Popup Lista Desplegable */
 .combo-box-popup .list-view {
     -fx-background-color: #FFFFFF;
     -fx-background-radius: 8px;
     -fx-border-radius: 8px;
     -fx-border-color: #D7CCC8;
     -fx-border-width: 1px;
-    /* Sombra elegante para que flote sobre el formulario */
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 10, 0, 0, 5);
-    -fx-padding: 5px; /* Margen interno */
+    -fx-padding: 5px;
 }
 
-/* Las celdas individuales de la lista */
 .combo-box-popup .list-cell {
     -fx-text-fill: #3E2723;
     -fx-padding: 8 10;
@@ -320,19 +327,17 @@
     -fx-background-radius: 4px;
 }
 
-/* Hover sobre una opción */
 .combo-box-popup .list-cell:filled:hover {
     -fx-background-color: #F5F5F4;
     -fx-text-fill: -fx-color-primario;
 }
 
-/* Opción Seleccionada */
 .combo-box-popup .list-cell:filled:selected {
     -fx-background-color: -fx-color-primario;
     -fx-text-fill: white;
 }
 
-/* Arreglo específico Prompt Text ComboBox */
+/* Prompt Text */
 .combo-box-base {
     -fx-prompt-text-fill: derive(-fx-color-texto, 50%);
 }
@@ -345,17 +350,16 @@
 
 
 /* ==============================================
-   DISEÑO DE TABLAS MODERNO (Tarjetas Flotantes & Badges)
+   TABLAS MODERNAS
    ============================================== */
 
-/* 1. EL CONTENEDOR */
 .table-view {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
     -fx-effect: none;
 }
 
-/* 2. CABECERA (HEADER) - ESTILO "CLEAN" */
+/* Cabecera */
 .table-view .column-header-background {
     -fx-background-color: transparent;
     -fx-border-color: transparent transparent #D7CCC8 transparent;
@@ -377,7 +381,7 @@
     -fx-opacity: 0.9;
 }
 
-/* 3. FILAS COMO TARJETAS (CARD STYLE) */
+/* Filas (Card Style) */
 .table-row-cell {
     -fx-background-color: #FFFFFF;
     -fx-background-insets: 4 10 4 10;
@@ -392,7 +396,7 @@
     -fx-effect: none;
 }
 
-/* 4. SELECCIÓN DE FILA */
+/* Selección */
 .table-view:focused .table-row-cell:selected,
 .table-view .table-row-cell:selected {
     -fx-background-color: #FFF3E0;
@@ -416,7 +420,7 @@
 
 
 /* ==============================================
-   ESTILOS PARA CHIPS / BADGES (Categorías)
+   BADGES / CHIPS (Categorías)
    ============================================== */
 .badge-base {
     -fx-padding: 5 12;
@@ -427,37 +431,17 @@
     -fx-content-display: CENTER;
 }
 
-/* Colores Específicos */
-.badge-transporte {
-    -fx-background-color: #E3F2FD;
-    -fx-text-fill: #1565C0;
-}
-.badge-energia {
-    -fx-background-color: #FFF8E1;
-    -fx-text-fill: #F57F17;
-}
-.badge-alimentacion {
-    -fx-background-color: #E8F5E9;
-    -fx-text-fill: #2E7D32;
-}
-.badge-agua {
-    -fx-background-color: #E0F7FA;
-    -fx-text-fill: #006064;
-}
-.badge-residuos {
-    -fx-background-color: #EFEBE9;
-    -fx-text-fill: #4E342E;
-}
-.badge-default {
-    -fx-background-color: #F5F5F5;
-    -fx-text-fill: #616161;
-}
+.badge-transporte { -fx-background-color: #E3F2FD; -fx-text-fill: #1565C0; }
+.badge-energia { -fx-background-color: #FFF8E1; -fx-text-fill: #F57F17; }
+.badge-alimentacion { -fx-background-color: #E8F5E9; -fx-text-fill: #2E7D32; }
+.badge-agua { -fx-background-color: #E0F7FA; -fx-text-fill: #006064; }
+.badge-residuos { -fx-background-color: #EFEBE9; -fx-text-fill: #4E342E; }
+.badge-default { -fx-background-color: #F5F5F5; -fx-text-fill: #616161; }
 
 
 /* ==============================================
-   DISEÑO DEL EMPTY STATE (Tabla Vacía)
+   EMPTY STATE (Tabla Vacía)
    ============================================== */
-
 .placeholder-container {
     -fx-padding: 30;
     -fx-alignment: CENTER;
@@ -480,34 +464,31 @@
     -fx-max-width: 400;
 }
 
-/* ==============================================
-   ESTILO AVANZADO DEL CALENDARIO (POPUP)
-   ============================================== */
 
-/* 1. El contenedor flotante principal */
+/* ==============================================
+   CALENDARIO (DatePicker Popup)
+   ============================================== */
 .date-picker-popup {
     -fx-background-color: #FFFFFF;
     -fx-background-radius: 10px;
     -fx-border-radius: 10px;
     -fx-border-color: #D7CCC8;
     -fx-border-width: 1px;
-    /* Sombra suave igual que tus tarjetas */
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5);
     -fx-padding: 5px;
 }
 
-/* 2. Cabecera (Mes y Año) */
 .date-picker-popup > .month-year-pane {
     -fx-background-color: transparent;
 }
 
 .date-picker-popup .label {
-    -fx-text-fill: #3E2723; /* Tu color café oscuro */
+    -fx-text-fill: #3E2723;
     -fx-font-weight: bold;
     -fx-font-size: 14px;
 }
 
-/* 3. Flechas de navegación (< >) */
+/* Flechas navegación */
 .date-picker-popup .spinner .button {
     -fx-background-color: transparent;
     -fx-cursor: hand;
@@ -515,22 +496,21 @@
 
 .date-picker-popup .spinner .button .left-arrow,
 .date-picker-popup .spinner .button .right-arrow {
-    -fx-background-color: #8D6E63; /* Flechas color café suave */
+    -fx-background-color: #8D6E63;
     -fx-scale-x: 0.9;
     -fx-scale-y: 0.9;
 }
 
 .date-picker-popup .spinner .button:hover .left-arrow,
 .date-picker-popup .spinner .button:hover .right-arrow {
-    -fx-background-color: -fx-color-primario; /* Naranja al pasar el ratón */
+    -fx-background-color: -fx-color-primario;
 }
 
-/* 4. Grid de Días */
+/* Grid Días */
 .date-picker-popup .calendar-grid {
     -fx-background-color: transparent;
 }
 
-/* Nombres de los días (Lun, Mar...) */
 .date-picker-popup .day-name-cell {
     -fx-background-color: transparent;
     -fx-text-fill: #8D6E63;
@@ -538,57 +518,50 @@
     -fx-font-size: 11px;
 }
 
-/* 5. Celdas de los días (Números) */
 .date-picker-popup .day-cell {
     -fx-background-color: transparent;
     -fx-text-fill: #3E2723;
     -fx-border-color: transparent;
-    -fx-background-radius: 50%; /* Hacemos los días redondos */
+    -fx-background-radius: 50%;
     -fx-border-radius: 50%;
     -fx-padding: 6px;
     -fx-cursor: hand;
 }
 
-/* Hover sobre un día */
 .date-picker-popup .day-cell:hover {
-    -fx-background-color: #F5F5F4; /* Gris muy suave */
+    -fx-background-color: #F5F5F4;
     -fx-text-fill: -fx-color-primario;
     -fx-border-color: #D7CCC8;
 }
 
-/* 6. Día SELECCIONADO (El cambio más importante) */
 .date-picker-popup .selected {
-    -fx-background-color: -fx-color-primario; /* Naranja Terracota */
+    -fx-background-color: -fx-color-primario;
     -fx-text-fill: white;
     -fx-font-weight: bold;
-    /* Sombra para que destaque */
     -fx-effect: dropshadow(three-pass-box, rgba(216, 125, 74, 0.4), 5, 0, 0, 1);
 }
 
-/* 7. Día "HOY" (Current Date) */
 .date-picker-popup .today {
-    -fx-background-color: #FFF3E0; /* Fondo naranja pálido */
+    -fx-background-color: #FFF3E0;
     -fx-text-fill: -fx-color-primario;
     -fx-border-color: -fx-color-primario;
 }
 
-/* Evitar que el 'hoy' seleccionado se vea raro (gana el seleccionado) */
 .date-picker-popup .today:selected {
     -fx-background-color: -fx-color-primario;
     -fx-text-fill: white;
 }
 
-/* Días de otros meses (Gris claro) */
 .date-picker-popup .previous-month,
 .date-picker-popup .next-month {
     -fx-text-fill: #CFD8DC;
 }
 
+
 /* ==============================================
-   ESTILOS PERSONALIZADOS PARA GRÁFICOS (Charts)
+   GRÁFICOS (Charts) & PROGRESS BARS
    ============================================== */
 
-/* 1. CONFIGURACIÓN GENERAL */
 .chart {
     -fx-padding: 10px;
     -fx-background-color: transparent;
@@ -598,147 +571,154 @@
     -fx-padding: 10px;
 }
 
-/* Fondo del área de dibujo transparente para que se vea limpio */
 .chart-plot-background {
     -fx-background-color: transparent;
 }
 
-/* 2. PALETA DE COLORES CORPORATIVA
-   Sobrescribimos el orden de colores por defecto para PieChart y BarChart.
-   Usamos tus tonos: Naranja, Marrón, Crema, etc.
-*/
+/* --- Paleta de Colores --- */
+.default-color0.chart-pie, .default-color0.chart-bar-filled { -fx-pie-color: #D87D4A; -fx-bar-fill: #D87D4A; }
+.default-color1.chart-pie, .default-color1.chart-bar-filled { -fx-pie-color: #3E2723; -fx-bar-fill: #3E2723; }
+.default-color2.chart-pie, .default-color2.chart-bar-filled { -fx-pie-color: #FBAF85; -fx-bar-fill: #FBAF85; }
+.default-color3.chart-pie, .default-color3.chart-bar-filled { -fx-pie-color: #8D6E63; -fx-bar-fill: #8D6E63; }
+.default-color4.chart-pie, .default-color4.chart-bar-filled { -fx-pie-color: #A1887F; -fx-bar-fill: #A1887F; }
+.default-color5.chart-pie, .default-color5.chart-bar-filled { -fx-pie-color: #FFCCBC; -fx-bar-fill: #FFCCBC; }
 
-/* Serie 1: Tu Naranja Principal (Ideal para la barra única o el trozo más grande) */
-.default-color0.chart-pie,
-.default-color0.chart-bar-filled {
-    -fx-pie-color: #D87D4A;
-    -fx-bar-fill: #D87D4A;
-}
-
-/* Serie 2: Marrón Café Oscuro (Contraste fuerte) */
-.default-color1.chart-pie,
-.default-color1.chart-bar-filled {
-    -fx-pie-color: #3E2723;
-    -fx-bar-fill: #3E2723;
-}
-
-/* Serie 3: Naranja Secundario (Más suave) */
-.default-color2.chart-pie,
-.default-color2.chart-bar-filled {
-    -fx-pie-color: #FBAF85;
-    -fx-bar-fill: #FBAF85;
-}
-
-/* Serie 4: Marrón Tierra Medio */
-.default-color3.chart-pie,
-.default-color3.chart-bar-filled {
-    -fx-pie-color: #8D6E63;
-    -fx-bar-fill: #8D6E63;
-}
-
-/* Serie 5: Gris/Beige Cálido (Para no saturar) */
-.default-color4.chart-pie,
-.default-color4.chart-bar-filled {
-    -fx-pie-color: #A1887F;
-    -fx-bar-fill: #A1887F;
-}
-
-/* Serie 6: Naranja Muy Pálido */
-.default-color5.chart-pie,
-.default-color5.chart-bar-filled {
-    -fx-pie-color: #FFCCBC;
-    -fx-bar-fill: #FFCCBC;
-}
-
-/* 3. ESTILIZACIÓN DE TEXTOS Y EJES */
-
-/* Título del gráfico (si lo usaras) */
+/* --- Textos y Leyenda --- */
 .chart-title {
     -fx-text-fill: #3E2723;
     -fx-font-size: 16px;
     -fx-font-weight: bold;
 }
 
-/* Leyenda (Legend) */
 .chart-legend {
     -fx-background-color: transparent;
     -fx-padding: 10px;
 }
+
 .chart-legend-item {
-    -fx-text-fill: #5D4037; /* Texto marrón */
+    -fx-text-fill: #5D4037;
     -fx-font-weight: bold;
     -fx-font-size: 12px;
 }
-/* Símbolo de la leyenda */
+
 .chart-legend-item-symbol {
-    -fx-background-radius: 50%; /* Círculos en vez de cuadrados en la leyenda */
+    -fx-background-radius: 50%;
 }
 
-/* Ejes (Axis) - Solo para BarChart */
+/* --- Ejes (BarChart) --- */
 .axis {
-    -fx-tick-label-fill: #5D4037; /* Color de los números/meses */
+    -fx-tick-label-fill: #5D4037;
     -fx-font-size: 11px;
     -fx-font-family: 'Segoe UI', sans-serif;
 }
 
 .axis-label {
-    -fx-text-fill: #8D6E63; /* Color del nombre del eje (ej: "kg CO2") */
+    -fx-text-fill: #8D6E63;
     -fx-font-size: 12px;
 }
 
-/* Líneas de la cuadrícula (Grid) - Las hacemos muy sutiles */
 .chart-vertical-grid-lines,
 .chart-horizontal-grid-lines {
-    -fx-stroke: #EFEBE9; /* Casi invisible */
-    -fx-stroke-dash-array: 4 4; /* Punteada */
+    -fx-stroke: #EFEBE9;
+    -fx-stroke-dash-array: 4 4;
 }
 
-/* Etiquetas sobre el gráfico de tarta */
 .chart-pie-label {
     -fx-fill: #3E2723;
     -fx-font-size: 11px;
 }
 
-/* ==============================================
-   ESTILOS PERSONALIZADOS PARA GRÁFICOS
-   ============================================== */
-
-/* ... (tus estilos anteriores de .chart, etc.) ... */
-
-/* ESTILO DE LAS BARRAS */
+/* --- Estilo de Barras --- */
 .chart-bar {
-    /* TRUCO CLAVE: Limitar el ancho máximo */
     -fx-max-bar-width: 50px;
-
-    /* Estética: Bordes redondeados solo arriba (efecto moderno) */
     -fx-background-radius: 8px 8px 0 0;
     -fx-background-insets: 0;
 }
 
-/* Ajuste para que las categorías no se peguen si hay muchas */
-.chart-plot-background {
-    -fx-background-color: transparent;
+.default-color0.chart-bar {
+    -fx-bar-fill: #D87D4A;
 }
-.default-color0.chart-bar { -fx-bar-fill: #D87D4A; } /* Tu color naranja */
 
-/* Estilo para la ProgressBar del Dashboard */
+/* --- Progress Bar --- */
 .progress-bar {
     -fx-border-width: 0;
-    -fx-background-radius: 10; /* Borde redondeado contenedor */
+    -fx-background-radius: 10;
 }
 
 .progress-bar .track {
-    -fx-background-color: #EFEBE9; /* Color de fondo (gris clarito) */
+    -fx-background-color: #EFEBE9;
     -fx-background-radius: 10;
 }
 
 .progress-bar .bar {
-    -fx-background-radius: 10; /* Borde redondeado de la barra de color */
+    -fx-background-radius: 10;
     -fx-background-insets: 0;
-    /* El color (-fx-accent) lo controlamos desde el Java para cambiarlo dinámicamente */
 }
 
-.icono-titulo {
-    -fx-icon-color: #D87D4A; /* O el color que elijas */
-    -fx-icon-size: 28px;
+/* ==============================================
+   NUEVO DISEÑO: TARJETA DE PERFIL UNIFICADA
+   ============================================== */
+
+/* Ajuste de la tarjeta para que se centre y recorte */
+.profile-card {
+    -fx-background-color: white;
+    -fx-background-radius: 20px;
+    -fx-effect: dropshadow(three-pass-box, rgba(62, 39, 35, 0.25), 25, 0, 0, 10);
+
+    /* Ancho máximo fijo para que no se ensanche demasiado */
+    -fx-max-width: 380px;
+
+    /* Padding inferior justo para que respire, pero no sobre */
+    -fx-padding: 0 0 20 0;
+}
+
+/* Cabecera de color naranja (Hero) */
+.profile-header {
+    -fx-background-color: linear-gradient(to bottom right, -fx-color-primario, -fx-color-secundario);
+    -fx-background-radius: 20 20 0 0; /* Redondeado solo arriba */
+    -fx-padding: 30 20 20 20;
+    -fx-alignment: CENTER;
+}
+
+/* Contenedor del avatar: Forzamos que sea cuadrado para que el radio 50% haga un círculo */
+.profile-avatar-bg {
+    -fx-background-color: rgba(255, 255, 255, 0.25);
+    -fx-background-radius: 50%;
+
+    /* TRUCO: Definir min y max iguales para forzar un cuadrado exacto */
+    -fx-min-width: 100px;
+    -fx-min-height: 100px;
+    -fx-max-width: 100px;
+    -fx-max-height: 100px;
+
+    -fx-alignment: CENTER;
+    -fx-padding: 0; /* El padding ya no es necesario si fijamos el tamaño */
+}
+
+/* Textos dentro de la cabecera naranja */
+.profile-header-name {
+    -fx-text-fill: white;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+
+.profile-header-email {
+    -fx-text-fill: rgba(255, 255, 255, 0.9);
+    -fx-font-size: 14px;
+}
+
+/* El cuerpo del formulario */
+.profile-body {
+    -fx-padding: 25;
+    -fx-spacing: 15;
+}
+
+/* Títulos de sección internos */
+.section-title {
+    -fx-text-fill: -fx-color-primario;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-border-color: transparent transparent #EFEBE9 transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 0 0 5 0;
 }

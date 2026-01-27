@@ -29,6 +29,7 @@
             <Button text="Mis Huellas" onAction="#onMenuHuellasClick" maxWidth="Infinity" styleClass="btn-menu"/>
             <Button text="Mis Hábitos" onAction="#onMenuHabitosClick" maxWidth="Infinity" styleClass="btn-menu"/>
             <Button text="Estadísticas" onAction="#onMenuEstadisticasClick" maxWidth="Infinity" styleClass="btn-menu"/>
+            <Button text="Perfil" onAction="#onMenuPerfilClick" maxWidth="Infinity" styleClass="btn-menu"/>
 
             <Label maxHeight="Infinity" VBox.vgrow="ALWAYS" />
 
