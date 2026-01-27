@@ -20,7 +20,7 @@ public class MainApp extends Application {
         seeder.sembrarDatos();
 
         FXMLLoader fxmlLoader = new FXMLLoader(MainApp.class.getResource("views/Login.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 800, 600);
+        Scene scene = new Scene(fxmlLoader.load(), 750, 700);
         scene.getStylesheets().add(getClass().getResource("/styles/application.css").toExternalForm()); // <--- IMPORTANTE
 
         stage.setTitle("EcoMetrica - Login");

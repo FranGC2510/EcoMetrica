@@ -5,15 +5,19 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import org.dam.fcojavier.ecometrica.entities.Usuario;
-import org.dam.fcojavier.ecometrica.services.UsuarioService; // Usamos el Servicio
+import org.dam.fcojavier.ecometrica.services.UsuarioService;
+import org.dam.fcojavier.ecometrica.utils.Sesion;
 import org.dam.fcojavier.ecometrica.utils.VistaNavegador;
 import javafx.event.ActionEvent;
 
 import java.time.LocalDate;
 
+/**
+ * Controlador para la vista de registro de nuevos usuarios.
+ * Gestiona la creación de cuentas y la validación de datos.
+ */
 public class RegistroController {
 
-    // CAMBIO: Usamos Service en vez de DAO
     private final UsuarioService usuarioService = new UsuarioService();
 
     @FXML private TextField txtNombre;
@@ -22,6 +26,10 @@ public class RegistroController {
     @FXML private PasswordField txtConfirmPassword;
     @FXML private Label lblMensaje;
 
+    /**
+     * Acción ejecutada al hacer clic en el botón "Registrarse".
+     * Valida los datos del formulario y crea un nuevo usuario si todo es correcto.
+     */
     @FXML
     protected void onRegistrarClick() {
         String nombre = txtNombre.getText();
@@ -29,49 +37,69 @@ public class RegistroController {
         String pass = txtPassword.getText();
         String confirmPass = txtConfirmPassword.getText();
 
-        // 1. Validaciones de Vista (campos vacíos)
         if (nombre.isEmpty() || email.isEmpty() || pass.isEmpty()) {
-            mostrarError("Todos los campos son obligatorios.");
+            mostrarMensaje("Todos los campos son obligatorios.", true);
             return;
         }
 
         if (!pass.equals(confirmPass)) {
-            mostrarError("Las contraseñas no coinciden.");
+            mostrarMensaje("Las contraseñas no coinciden.", true);
             return;
         }
 
-        // 2. Preparamos el objeto (Sin la contraseña todavía)
         Usuario nuevoUsuario = new Usuario();
         nuevoUsuario.setNombre(nombre);
         nuevoUsuario.setEmail(email);
         nuevoUsuario.setFechaRegistro(LocalDate.now());
 
-        // 3. Delegamos toda la lógica compleja al Servicio
         boolean exito = usuarioService.registrarUsuario(nuevoUsuario, pass);
 
         if (exito) {
-            lblMensaje.setText("¡Usuario registrado con éxito!");
-            lblMensaje.setStyle("-fx-text-fill: -fx-color-exito;");
-            limpiarFormulario();
+            Sesion.getInstancia().login(nuevoUsuario);
+            try {
+                VistaNavegador.cargarVista(txtEmail.getScene(), "/org/dam/fcojavier/ecometrica/views/MainLayout.fxml");
+            } catch (Exception e) {
+                mostrarMensaje("Error al entrar a la aplicación: " + e.getMessage(), true);
+                e.printStackTrace();
+            }
         } else {
-            mostrarError("El email ya está registrado.");
+            mostrarMensaje("Error: El email ya está registrado.", true);
         }
     }
 
-    private void mostrarError(String mensaje) {
-        lblMensaje.setText(mensaje);
-        lblMensaje.setStyle("-fx-text-fill: -fx-color-error;");
+    /**
+     * Acción ejecutada al hacer clic en "Volver".
+     * Regresa a la pantalla de inicio de sesión.
+     *
+     * @param event Evento de acción que desencadena la navegación.
+     */
+    @FXML
+    protected void onVolverClick(ActionEvent event) {
+        VistaNavegador.cargarVista(event, "views/Login.fxml");
     }
 
+    /**
+     * Muestra un mensaje de feedback en la interfaz.
+     *
+     * @param texto   El mensaje a mostrar.
+     * @param esError Si es true, aplica estilo de error.
+     */
+    private void mostrarMensaje(String texto, boolean esError) {
+        lblMensaje.setText(texto);
+        lblMensaje.getStyleClass().removeAll("mensaje-error", "mensaje-exito");
+        lblMensaje.getStyleClass().add("mensaje-base");
+        if (esError) {
+            lblMensaje.getStyleClass().add("mensaje-error");
+        }
+    }
+
+    /**
+     * Limpia los campos del formulario de registro.
+     */
     private void limpiarFormulario() {
         txtNombre.clear();
         txtEmail.clear();
         txtPassword.clear();
         txtConfirmPassword.clear();
-    }
-
-    @FXML
-    protected void onVolverClick(ActionEvent event) {
-        VistaNavegador.cargarVista(event, "views/Login.fxml");
     }
 }

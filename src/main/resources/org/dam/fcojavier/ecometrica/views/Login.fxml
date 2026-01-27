@@ -1,38 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 
-<VBox alignment="CENTER" spacing="20.0" styleClass="login-container" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.dam.fcojavier.ecometrica.controllers.LoginController">
+<VBox styleClass="login-root" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.dam.fcojavier.ecometrica.controllers.LoginController">
+    <VBox styleClass="login-card">
+        <ImageView fx:id="imgLogo" fitHeight="100.0" fitWidth="100.0" styleClass="login-logo">
+            <image>
+                <Image url="@logo.png" />
+            </image>
+        </ImageView>
 
-    <padding>
-        <Insets bottom="40.0" left="40.0" right="40.0" top="40.0" />
-    </padding>
+        <Label styleClass="titulo-app" text="EcoMetrica" />
+        <Label styleClass="subtitulo" text="Inicia sesión para continuar" />
 
-    <Label styleClass="titulo-app" text="EcoMetrica">
-        <font>
-            <Font name="System Bold" size="24.0" />
-        </font>
-    </Label>
+        <VBox alignment="CENTER_LEFT" spacing="5.0">
+            <Label styleClass="label-campo" text="Email" />
+            <TextField fx:id="txtEmail" promptText="ejemplo@correo.com" text="fran@gmail.com" styleClass="input-login"/>
+        </VBox>
 
-    <Label styleClass="subtitulo" text="Inicia sesión para continuar" />
+        <VBox alignment="CENTER_LEFT" spacing="5.0">
+            <Label styleClass="label-campo" text="Contraseña" />
+            <PasswordField fx:id="txtPassword" promptText="********" text="123" styleClass="input-login"/>
+        </VBox>
 
-    <VBox alignment="CENTER_LEFT" maxWidth="300.0" spacing="5.0">
-        <Label text="Email" />
-        <TextField fx:id="txtEmail" promptText="ejemplo@correo.com" text="fran@gmail.com" />
+        <Label fx:id="lblMensaje" wrapText="true" />
+        <Button defaultButton="true" maxWidth="Infinity" onAction="#onLoginButtonClick" styleClass="btn-primary" text="ENTRAR" />
+        <Label onMouseClicked="#onRegistrarLabelClick" styleClass="link-text" text="¿No tienes cuenta? Regístrate aquí" />
     </VBox>
-
-    <VBox alignment="CENTER_LEFT" maxWidth="300.0" spacing="5.0">
-        <Label text="Contraseña" />
-        <PasswordField fx:id="txtPassword" promptText="********" text="123" />
-    </VBox>
-
-    <Label fx:id="lblMensaje" maxWidth="300.0" wrapText="true" />
-
-    <Button defaultButton="true" maxWidth="300.0" onAction="#onLoginButtonClick" styleClass="btn-primary" text="ENTRAR" />
-
-    <Label onMouseClicked="#onRegistrarLabelClick" styleClass="link-text" text="¿No tienes cuenta? Regístrate aquí" />
-
 </VBox>

@@ -7,7 +7,7 @@
     /* Paleta de Colores Oficial */
     -fx-color-primario: #D87D4A;
     -fx-color-secundario: #FBAF85;
-    -fx-color-fondo: #FAFAF9;
+    -fx-color-fondo: #FAF9F6;
     -fx-color-texto: #3E2723;
     -fx-color-borde: #D7CCC8;
 
@@ -19,6 +19,29 @@
     -fx-font-family: 'Segoe UI', sans-serif;
     -fx-background-color: -fx-color-fondo;
     -fx-font-size: 14px;
+}
+
+/* Fondos y Contenedores */
+.login-root {
+    -fx-background-color: -fx-color-fondo;
+    -fx-alignment: CENTER;
+}
+
+.login-card {
+    -fx-background-color: #FFFFFF;
+    -fx-padding: 40;
+    -fx-spacing: 20;
+    -fx-alignment: CENTER;
+    -fx-max-width: 450;
+    -fx-background-radius: 20;
+    -fx-effect: dropshadow(three-pass-box, rgba(78, 52, 46, 0.15), 20, 0, 0, 10);
+}
+
+/* Estilo para el logo en login/registro */
+.login-logo {
+    -fx-image: url("/org/dam/fcojavier/ecometrica/views/logo.png");
+    -fx-preserve-ratio: true;
+    -fx-smooth: true;
 }
 
 /* ==============================================
@@ -254,6 +277,27 @@
     -fx-background-color: transparent;
 }
 
+/* Estilos específicos para los campos de Login y Registro */
+.input-login {
+    -fx-font-size: 16px;
+    -fx-pref-height: 45px;
+    -fx-padding: 0 15 0 15;
+    -fx-background-radius: 10px;
+    -fx-border-radius: 10px;
+}
+
+/* Opcional: Aumentar el tamaño del texto dentro del botón de estas pantallas */
+.login-card .btn-primary {
+    -fx-font-size: 15px;
+    -fx-pref-height: 45px;
+}
+
+/* Opcional: Aumentar el tamaño de las etiquetas (Email, Contraseña) solo en la tarjeta */
+.login-card .label-campo {
+    -fx-font-size: 14px;
+    -fx-padding: 0 0 3 0;
+}
+
 
 /* ==============================================
    5. TABLAS MODERNAS
@@ -358,8 +402,16 @@
 
 /* Sidebar */
 .sidebar {
-    -fx-background-color: #3E2723;
-    -fx-pref-width: 220;
+    -fx-background-color: linear-gradient(to bottom, #4E342E 0%, #3E2723 50%, #2D1B18 100%);
+    -fx-pref-width: 250;
+    -fx-border-color: transparent rgba(0,0,0,0.1) transparent transparent;
+    -fx-border-width: 0 1 0 0;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 0, 0);
+}
+
+.sidebar-header {
+    -fx-border-color: transparent transparent rgba(255,255,255,0.1) transparent;
+    -fx-border-width: 0 0 1 0;
 }
 
 .sidebar-title {
@@ -376,22 +428,51 @@
 
 .btn-menu {
     -fx-background-color: transparent;
-    -fx-text-fill: white;
+    -fx-text-fill: #D7CCC8;
     -fx-alignment: CENTER_LEFT;
-    -fx-font-size: 14px;
-    -fx-padding: 10 15;
+    -fx-font-size: 15px;
+    -fx-font-weight: 500;
+    -fx-padding: 12 20;
+    -fx-background-radius: 12;
     -fx-cursor: hand;
+    -fx-graphic-text-gap: 15;
+    -fx-transition: all 0.2s ease-in-out;
 }
 
 .btn-menu:hover {
-    -fx-background-color: rgba(255, 255, 255, 0.1);
-    -fx-border-color: transparent transparent transparent -fx-color-primario;
+    -fx-background-color: rgba(255, 255, 255, 0.08);
+    -fx-text-fill: white;
+}
+
+.btn-menu-active {
+    -fx-background-color: rgba(216, 125, 74, 0.15);
+    -fx-text-fill: #D87D4A;
+    -fx-border-color: transparent transparent transparent #D87D4A;
     -fx-border-width: 0 0 0 4;
+    -fx-font-weight: bold;
+}
+
+.btn-menu .ikonli-font-icon {
+    -fx-icon-color: #A1887F;
+}
+
+.btn-menu:hover .ikonli-font-icon,
+.btn-menu-active .ikonli-font-icon {
+    -fx-icon-color: #D87D4A;
+}
+
+.sidebar-footer {
+    -fx-border-color: rgba(255,255,255,0.1) transparent transparent transparent;
+    -fx-border-width: 1 0 0 0;
 }
 
 .btn-menu-logout {
-    -fx-background-color: rgba(211, 47, 47, 0.1);
+    -fx-background-color: rgba(211, 47, 47, 0.05);
+    -fx-border-color: rgba(211, 47, 47, 0.2);
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
     -fx-text-fill: #EF9A9A;
+    -fx-graphic-text-gap: 10;
     -fx-alignment: CENTER;
     -fx-cursor: hand;
 }
@@ -399,6 +480,40 @@
 .btn-menu-logout:hover {
     -fx-background-color: -fx-color-error;
     -fx-text-fill: white;
+}
+
+/* Tarjeta de Usuario Sidebar */
+.sidebar-user-card {
+    -fx-background-color: rgba(255, 255, 255, 0.05);
+    -fx-background-radius: 15;
+    -fx-padding: 15;
+    -fx-cursor: hand;
+    -fx-transition: all 0.3s;
+}
+
+.sidebar-user-card:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 2);
+}
+
+.sidebar-avatar-medium {
+    -fx-background-color: #D87D4A;
+    -fx-background-radius: 10;
+    -fx-min-width: 45;
+    -fx-min-height: 45;
+    -fx-max-width: 45;
+    -fx-max-height: 45;
+}
+
+.sidebar-user-name {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 15px;
+}
+
+.sidebar-view-profile {
+    -fx-text-fill: #D7CCC8;
+    -fx-font-size: 12px;
 }
 
 .content-area {
@@ -411,14 +526,15 @@
     -fx-background-color: white;
     -fx-background-radius: 20px;
     -fx-effect: dropshadow(three-pass-box, rgba(62, 39, 35, 0.25), 25, 0, 0, 10);
-    -fx-max-width: 380px;
-    -fx-padding: 0 0 20 0;
+    -fx-max-width: 420px;
+    -fx-max-height: 650px;
+    -fx-padding: 0 0 10 0;
 }
 
 .profile-header {
     -fx-background-color: linear-gradient(to bottom right, -fx-color-primario, -fx-color-secundario);
     -fx-background-radius: 20 20 0 0;
-    -fx-padding: 30 20 20 20;
+    -fx-padding: 20 20 15 20;
     -fx-alignment: CENTER;
 }
 

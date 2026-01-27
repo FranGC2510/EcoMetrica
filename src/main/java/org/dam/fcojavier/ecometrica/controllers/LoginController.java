@@ -10,57 +10,65 @@ import org.dam.fcojavier.ecometrica.services.UsuarioService;
 import org.dam.fcojavier.ecometrica.utils.Sesion;
 import org.dam.fcojavier.ecometrica.utils.VistaNavegador;
 
+/**
+ * Controlador para la vista de inicio de sesión (Login).
+ * Gestiona la autenticación de usuarios y la navegación al registro.
+ */
 public class LoginController {
 
-    // Instanciamos el servicio para poder usar la lógica de login
     private final UsuarioService usuarioService = new UsuarioService();
 
-    // Elementos de la interfaz (View) que manipularemos desde aquí
-    // Los nombres de las variables deben coincidir con los fx:id del FXML
-    @FXML
-    private TextField txtEmail;
-
-    @FXML
-    private PasswordField txtPassword;
-
-    @FXML
-    private Label lblMensaje; // Para mostrar errores (ej: "Contraseña incorrecta")
+    @FXML private TextField txtEmail;
+    @FXML private PasswordField txtPassword;
+    @FXML private Label lblMensaje;
 
     /**
-     * Este método se ejecutará cuando se pulse el botón "Iniciar Sesión"
+     * Acción ejecutada al hacer clic en el botón "Iniciar Sesión".
+     * Valida las credenciales y redirige al dashboard si son correctas.
      */
     @FXML
     protected void onLoginButtonClick() {
         String email = txtEmail.getText();
         String password = txtPassword.getText();
 
-        // 1. Validaciones básicas de interfaz (campos vacíos)
         if (email.isEmpty() || password.isEmpty()) {
-            lblMensaje.setText("Por favor, rellena todos los campos.");
-            lblMensaje.setStyle("-fx-text-fill: -fx-color-error;"); // Rojo
+            mostrarMensaje("Por favor, rellena todos los campos.", true);
             return;
         }
 
-        // 2. Llamamos al Servicio para verificar credenciales
         Usuario usuarioLogueado = usuarioService.login(email, password);
 
         if (usuarioLogueado != null) {
-            // LOGIN ÉXITO
             Sesion.getInstancia().login(usuarioLogueado);
-
-            System.out.println("Login correcto. Accediendo al Dashboard...");
-
             VistaNavegador.cargarVista(lblMensaje.getScene(), "views/MainLayout.fxml");
         } else {
-            // LOGIN FALLIDO
-            lblMensaje.setText("Email o contraseña incorrectos.");
-            lblMensaje.setStyle("-fx-text-fill: -fx-color-error;");
+            mostrarMensaje("Email o contraseña incorrectos.", true);
         }
     }
 
+    /**
+     * Acción ejecutada al hacer clic en el enlace de registro.
+     * Redirige a la vista de registro de nuevos usuarios.
+     *
+     * @param event Evento de ratón que desencadena la navegación.
+     */
     @FXML
     public void onRegistrarLabelClick(MouseEvent event) {
-        // Usamos la utilidad para ir a la vista de Registro
         VistaNavegador.cargarVista(event, "views/Registro.fxml");
+    }
+
+    /**
+     * Muestra un mensaje de feedback en la interfaz.
+     *
+     * @param texto   El mensaje a mostrar.
+     * @param esError Si es true, aplica estilo de error; si no, estilo normal/éxito.
+     */
+    private void mostrarMensaje(String texto, boolean esError) {
+        lblMensaje.setText(texto);
+        lblMensaje.getStyleClass().removeAll("mensaje-error", "mensaje-exito");
+        lblMensaje.getStyleClass().add("mensaje-base");
+        if (esError) {
+            lblMensaje.getStyleClass().add("mensaje-error");
+        }
     }
 }
