@@ -18,6 +18,10 @@ import org.dam.fcojavier.ecometrica.utils.Sesion;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Controlador para la gestión de huellas de carbono.
+ * Permite registrar, consultar, actualizar y eliminar (CRUD) registros de impacto ambiental.
+ */
 public class HuellaController {
 
     private final HuellaService huellaService = new HuellaService();
@@ -44,16 +48,87 @@ public class HuellaController {
     @FXML private TableColumn<Huella, String> colUnidad;
     @FXML private TableColumn<Huella, String> colImpacto; // Columna Calculada (String formateado)
 
+    /**
+     * Inicializa el controlador.
+     * Configura la tabla, los listeners del formulario y carga los datos iniciales.
+     */
     @FXML
     public void initialize() {
-        // 1. Configuración de Columnas
         configurarTabla();
+        configurarFormulario();
+        configurarListeners();
+        refrescarTabla();
+    }
 
-        // Configuración inicial de combos para que usen la celda inteligente
+    /**
+     * Configura las columnas de la tabla de huellas.
+     */
+    private void configurarTabla() {
+        colFecha.setCellValueFactory(new PropertyValueFactory<>("fecha"));
+        colValor.setCellValueFactory(new PropertyValueFactory<>("valor"));
+        colUnidad.setCellValueFactory(new PropertyValueFactory<>("unidad"));
+
+        colActividad.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getId_actividad().getNombre()));
+
+        colCategoria.setCellValueFactory(cellData ->
+                new SimpleObjectProperty<>(cellData.getValue().getId_actividad().getCategoria())
+        );
+
+        colCategoria.setCellFactory(column -> new TableCell<Huella, Categoria>() {
+            @Override
+            protected void updateItem(Categoria item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setGraphic(null);
+                    setText(null);
+                } else {
+                    setGraphic(crearBadgeCategoria(item));
+                    setText(null);
+                }
+            }
+        });
+
+        // COLUMNA CALCULADA: Impacto = Valor * Factor Emisión
+        colImpacto.setCellValueFactory(cellData -> {
+            Huella h = cellData.getValue();
+            double factor = h.getId_actividad().getCategoria().getFactorEmision();
+            double totalCo2 = h.getValor() * factor;
+            return new SimpleStringProperty(String.format("%.2f", totalCo2));
+        });
+    }
+
+    /**
+     * Crea un componente gráfico (Badge) para mostrar la categoría con estilo.
+     *
+     * @param item La categoría a mostrar.
+     * @return Un contenedor HBox con el Label estilizado.
+     */
+    private HBox crearBadgeCategoria(Categoria item) {
+        Label lblBadge = new Label(item.getNombre());
+        lblBadge.getStyleClass().add("badge-base");
+
+        String nombreCat = item.getNombre().toLowerCase();
+        if (nombreCat.contains("transporte")) lblBadge.getStyleClass().add("badge-transporte");
+        else if (nombreCat.contains("energía") || nombreCat.contains("energia")) lblBadge.getStyleClass().add("badge-energia");
+        else if (nombreCat.contains("alimentación") || nombreCat.contains("comida")) lblBadge.getStyleClass().add("badge-alimentacion");
+        else if (nombreCat.contains("agua")) lblBadge.getStyleClass().add("badge-agua");
+        else if (nombreCat.contains("residuos") || nombreCat.contains("basura")) lblBadge.getStyleClass().add("badge-residuos");
+        else lblBadge.getStyleClass().add("badge-default");
+
+        HBox container = new HBox(lblBadge);
+        container.setAlignment(Pos.CENTER);
+        return container;
+    }
+
+    /**
+     * Configura el estado inicial del formulario y los DatePickers.
+     */
+    private void configurarFormulario() {
         resetearCombo(cbCategoria);
         resetearCombo(cbActividad);
         cbActividad.setPromptText("Primero elige categoría...");
-        // 2. Configuración del Formulario
+
         dpFecha.setValue(LocalDate.now());
         dpFecha.setDayCellFactory(param -> new DateCell() {
             @Override
@@ -69,7 +144,12 @@ public class HuellaController {
         });
 
         cargarCategorias();
+    }
 
+    /**
+     * Configura los listeners para los componentes de la interfaz.
+     */
+    private void configurarListeners() {
         // Listener para cascada Categoría -> Actividad
         cbCategoria.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null) {
@@ -85,72 +165,12 @@ public class HuellaController {
             }
         });
 
+        // Listener de selección en la tabla
         tablaHuellas.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
                 huellaSeleccionada = newSelection;
                 cargarHuellaEnFormulario(newSelection);
             }
-        });
-
-        // 3. Cargar datos iniciales en la tabla
-        refrescarTabla();
-    }
-
-    private void configurarTabla() {
-        colFecha.setCellValueFactory(new PropertyValueFactory<>("fecha"));
-        colValor.setCellValueFactory(new PropertyValueFactory<>("valor"));
-        colUnidad.setCellValueFactory(new PropertyValueFactory<>("unidad"));
-
-        colActividad.setCellValueFactory(cellData ->
-                new SimpleStringProperty(cellData.getValue().getId_actividad().getNombre()));
-
-        colCategoria.setCellValueFactory(cellData ->
-                new SimpleObjectProperty<>(cellData.getValue().getId_actividad().getCategoria())
-        );
-        colCategoria.setCellFactory(column -> new TableCell<Huella, Categoria>() {
-            @Override
-            protected void updateItem(Categoria item, boolean empty) {
-                super.updateItem(item, empty);
-
-                if (empty || item == null) {
-                    setGraphic(null);
-                    setText(null);
-                } else {
-                    // Creamos el Chip
-                    Label lblBadge = new Label(item.getNombre());
-                    lblBadge.getStyleClass().add("badge-base");
-
-                    // Asignamos color según el nombre (incluyendo Agua y Residuos)
-                    String nombreCat = item.getNombre().toLowerCase();
-
-                    if (nombreCat.contains("transporte")) {
-                        lblBadge.getStyleClass().add("badge-transporte");
-                    } else if (nombreCat.contains("energía") || nombreCat.contains("energia")) {
-                        lblBadge.getStyleClass().add("badge-energia");
-                    } else if (nombreCat.contains("alimentación") || nombreCat.contains("comida")) {
-                        lblBadge.getStyleClass().add("badge-alimentacion");
-                    } else if (nombreCat.contains("agua")) {
-                        lblBadge.getStyleClass().add("badge-agua");
-                    } else if (nombreCat.contains("residuos") || nombreCat.contains("basura")) {
-                        lblBadge.getStyleClass().add("badge-residuos");
-                    } else {
-                        lblBadge.getStyleClass().add("badge-default");
-                    }
-
-                    // Centrado
-                    HBox container = new HBox(lblBadge);
-                    container.setAlignment(Pos.CENTER);
-                    setGraphic(container);
-                    setText(null);
-                }
-            }
-        });
-        // COLUMNA CALCULADA: Impacto = Valor * Factor Emisión
-        colImpacto.setCellValueFactory(cellData -> {
-            Huella h = cellData.getValue();
-            double factor = h.getId_actividad().getCategoria().getFactorEmision();
-            double totalCo2 = h.getValor() * factor;
-            return new SimpleStringProperty(String.format("%.2f", totalCo2));
         });
     }
 
@@ -162,6 +182,9 @@ public class HuellaController {
         cbActividad.setItems(FXCollections.observableArrayList(huellaService.obtenerActividadesPorCategoria(categoria)));
     }
 
+    /**
+     * Recarga la tabla con las huellas del usuario actual.
+     */
     private void refrescarTabla() {
         Usuario usuario = Sesion.getInstancia().getUsuarioLogueado();
         if (usuario != null) {
@@ -170,27 +193,30 @@ public class HuellaController {
         }
     }
 
+    /**
+     * Carga los datos de una huella seleccionada en el formulario para su edición.
+     *
+     * @param huella La huella seleccionada.
+     */
     private void cargarHuellaEnFormulario(Huella huella) {
-        // 1. Cargamos datos simples
         dpFecha.setValue(huella.getFecha());
         txtValor.setText(String.valueOf(huella.getValor()));
 
-        // 2. Cargamos los Combos (Cascada inversa)
-        // Primero seleccionamos la categoría de la actividad de la huella
         Categoria cat = huella.getId_actividad().getCategoria();
         cbCategoria.setValue(cat);
 
-        // Al seleccionar categoría, el listener carga las actividades.
-        // Ahora seleccionamos la actividad específica.
         cbActividad.setValue(huella.getId_actividad());
         cbActividad.setDisable(false);
 
-        // 3. Cambiamos estado de botones
         btnGuardar.setText("ACTUALIZAR");
         btnEliminar.setDisable(false);
         mostrarMensaje("Editando registro del " + huella.getFecha(), false);
     }
 
+    /**
+     * Acción ejecutada al hacer clic en "Guardar".
+     * Registra una nueva huella o actualiza una existente.
+     */
     @FXML
     public void onGuardarClick() {
         Usuario usuario = Sesion.getInstancia().getUsuarioLogueado();
@@ -210,24 +236,21 @@ public class HuellaController {
 
         try {
             double valor = Double.parseDouble(valorTexto);
-            double co2 = 0;
+            double co2;
 
             if (huellaSeleccionada == null) {
-                // --- MODO CREAR ---
                 co2 = huellaService.registrarHuella(usuario, actividad, valor, fecha);
                 mostrarMensaje(String.format("Registrado. Impacto: %.2f kg CO2", co2), false);
             } else {
-                // --- MODO EDICIÓN ---
                 huellaSeleccionada.setId_actividad(actividad);
                 huellaSeleccionada.setValor(valor);
                 huellaSeleccionada.setFecha(fecha);
-
                 co2 = huellaService.actualizarHuella(huellaSeleccionada);
                 mostrarMensaje(String.format("Actualizado. Impacto: %.2f kg CO2", co2), false);
             }
 
             refrescarTabla();
-            onLimpiarClick(); // Limpiamos para volver al estado "Nuevo Registro"
+            onLimpiarClick();
 
         } catch (NumberFormatException e) {
             mostrarMensaje("El valor debe ser un número.", true);
@@ -236,6 +259,10 @@ public class HuellaController {
         }
     }
 
+    /**
+     * Acción ejecutada al hacer clic en "Limpiar" o "Cancelar".
+     * Resetea el formulario y el estado de selección.
+     */
     @FXML
     public void onLimpiarClick() {
         limpiarFormulario();
@@ -246,6 +273,10 @@ public class HuellaController {
         lblMensaje.setText("");
     }
 
+    /**
+     * Acción ejecutada al hacer clic en "Eliminar".
+     * Elimina la huella seleccionada.
+     */
     @FXML
     public void onEliminarClick() {
         if (huellaSeleccionada != null) {
@@ -259,20 +290,15 @@ public class HuellaController {
     private void limpiarFormulario() {
         txtValor.clear();
         dpFecha.setValue(LocalDate.now());
-
-        // 1. Resetear Categoría (Esto disparará el listener que limpia Actividad)
         resetearCombo(cbCategoria);
-
-        // 2. Aseguramos que Actividad también quede limpia visualmente y bloqueada
         resetearCombo(cbActividad);
         cbActividad.setDisable(true);
-        cbActividad.setPromptText("Primero elige categoría..."); // Restauramos el texto inicial
-
+        cbActividad.setPromptText("Primero elige categoría...");
         lblUnidad.setText("-");
     }
 
     /**
-     * Método auxiliar para resetear correctamente un ComboBox y que se vea el PromptText.
+     * Resetea un ComboBox para mostrar el PromptText correctamente.
      */
     private <T> void resetearCombo(ComboBox<T> combo) {
         combo.setValue(null);
@@ -281,20 +307,28 @@ public class HuellaController {
             protected void updateItem(T item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
-                    setText(null); // Esto hace que se vea el PromptText
+                    setText(null);
                 } else {
-                    setText(item.toString()); // Muestra el nombre normal
+                    setText(item.toString());
                 }
             }
         });
     }
 
+    /**
+     * Muestra un mensaje de feedback en la interfaz.
+     *
+     * @param texto   El mensaje a mostrar.
+     * @param esError Si es true, el mensaje se muestra en rojo; si no, en verde.
+     */
     private void mostrarMensaje(String texto, boolean esError) {
         lblMensaje.setText(texto);
+        lblMensaje.getStyleClass().removeAll("mensaje-error", "mensaje-exito");
+        lblMensaje.getStyleClass().add("mensaje-base");
         if (esError) {
-            lblMensaje.setStyle("-fx-text-fill: -fx-color-error;");
+            lblMensaje.getStyleClass().add("mensaje-error");
         } else {
-            lblMensaje.setStyle("-fx-text-fill: -fx-color-exito;");
+            lblMensaje.getStyleClass().add("mensaje-exito");
         }
     }
 }

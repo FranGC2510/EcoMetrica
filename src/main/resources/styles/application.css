@@ -732,3 +732,67 @@
 .date-picker-popup .next-month {
     -fx-text-fill: #CFD8DC;
 }
+
+/* ==============================================
+   10. ESTILOS DINÁMICOS (InicioController)
+   ============================================== */
+
+/* Barra de Progreso - Estados */
+.progress-bar-success { -fx-accent: #66BB6A; -fx-control-inner-background: #EFEBE9; }
+.progress-bar-warning { -fx-accent: #FFA726; -fx-control-inner-background: #EFEBE9; }
+.progress-bar-danger  { -fx-accent: #EF5350; -fx-control-inner-background: #EFEBE9; }
+.progress-bar-critical { -fx-accent: #ed0992; -fx-control-inner-background: #EFEBE9; }
+
+/* Podio - Escalones */
+.podium-step {
+    -fx-background-radius: 15;
+    -fx-border-width: 2;
+    -fx-border-radius: 15;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);
+    -fx-cursor: hand;
+}
+
+.podium-step-gold {
+    -fx-background-color: #FFF8E1;
+    -fx-border-color: #FFD54F;
+}
+.podium-step-gold:hover {
+    -fx-border-color: -fx-color-primario;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 0, 4);
+}
+
+.podium-step-silver {
+    -fx-background-color: #F5F5F5;
+    -fx-border-color: #BDBDBD;
+}
+.podium-step-silver:hover {
+    -fx-border-color: -fx-color-primario;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 0, 4);
+}
+
+.podium-step-bronze {
+    -fx-background-color: #EFEBE9;
+    -fx-border-color: #8D6E63;
+}
+.podium-step-bronze:hover {
+    -fx-border-color: -fx-color-primario;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 0, 4);
+}
+
+/* Podio - Iconos */
+.podium-icon-gold { -fx-icon-color: #FBC02D; -fx-icon-size: 48; }
+.podium-icon-silver { -fx-icon-color: #90A4AE; -fx-icon-size: 40; }
+.podium-icon-bronze { -fx-icon-color: #8D6E63; -fx-icon-size: 40; }
+
+/* Podio - Textos */
+.podium-label-name {
+    -fx-font-weight: bold;
+    -fx-text-fill: #3E2723;
+    -fx-font-size: 14px;
+}
+
+.podium-label-value {
+    -fx-text-fill: -fx-color-primario;
+    -fx-font-weight: bold;
+    -fx-font-size: 20px;
+}

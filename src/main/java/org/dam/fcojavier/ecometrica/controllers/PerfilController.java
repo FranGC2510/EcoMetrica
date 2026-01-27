@@ -6,6 +6,10 @@ import org.dam.fcojavier.ecometrica.entities.Usuario;
 import org.dam.fcojavier.ecometrica.services.UsuarioService;
 import org.dam.fcojavier.ecometrica.utils.Sesion;
 
+/**
+ * Controlador para la vista de perfil de usuario.
+ * Permite visualizar y editar los datos personales y cambiar la contraseña.
+ */
 public class PerfilController {
 
     // --- DATOS PERSONALES ---
@@ -19,14 +23,20 @@ public class PerfilController {
     @FXML private PasswordField txtPassNueva;
     @FXML private PasswordField txtPassConfirmar;
 
-    // Usamos el SERVICIO, no el DAO ni Hibernate directo
     private final UsuarioService usuarioService;
     private Usuario usuarioLogueado;
 
+    /**
+     * Constructor por defecto. Inicializa el servicio de usuario.
+     */
     public PerfilController() {
         this.usuarioService = new UsuarioService();
     }
 
+    /**
+     * Inicializa el controlador.
+     * Obtiene el usuario de la sesión y carga sus datos en la vista.
+     */
     @FXML
     public void initialize() {
         usuarioLogueado = Sesion.getInstancia().getUsuarioLogueado();
@@ -35,6 +45,9 @@ public class PerfilController {
         }
     }
 
+    /**
+     * Carga los datos del usuario en los campos de texto y etiquetas.
+     */
     private void cargarDatosEnVista() {
         lblNombreCompleto.setText(usuarioLogueado.getNombre());
         lblEmailDisplay.setText(usuarioLogueado.getEmail());
@@ -43,6 +56,10 @@ public class PerfilController {
         txtEmail.setText(usuarioLogueado.getEmail());
     }
 
+    /**
+     * Acción ejecutada al hacer clic en "Guardar Cambios".
+     * Valida y actualiza la información personal del usuario.
+     */
     @FXML
     public void onGuardarDatosClick() {
         String nuevoNombre = txtNombre.getText();
@@ -53,21 +70,23 @@ public class PerfilController {
             return;
         }
 
-        // Actualizamos el objeto en memoria
         usuarioLogueado.setNombre(nuevoNombre);
         usuarioLogueado.setEmail(nuevoEmail);
 
-        // Delegamos al SERVICIO la persistencia
         boolean exito = usuarioService.actualizarPerfil(usuarioLogueado);
 
         if (exito) {
             mostrarAlerta(Alert.AlertType.INFORMATION, "Perfil Actualizado", "Tus datos se han guardado correctamente.");
-            cargarDatosEnVista(); // Refrescar la cabecera
+            cargarDatosEnVista();
         } else {
             mostrarAlerta(Alert.AlertType.ERROR, "Error", "No se pudieron guardar los cambios.");
         }
     }
 
+    /**
+     * Acción ejecutada al hacer clic en "Actualizar Contraseña".
+     * Valida la contraseña actual y la coincidencia de la nueva, y solicita el cambio al servicio.
+     */
     @FXML
     public void onCambiarPassClick() {
         String passActual = txtPassActual.getText();
@@ -84,7 +103,6 @@ public class PerfilController {
             return;
         }
 
-        // Llamamos al SERVICIO para verificar la actual y guardar la nueva
         boolean exito = usuarioService.cambiarContrasena(usuarioLogueado, passActual, passNueva);
 
         if (exito) {
@@ -95,12 +113,22 @@ public class PerfilController {
         }
     }
 
+    /**
+     * Limpia los campos de contraseña del formulario.
+     */
     private void limpiarCamposPass() {
         txtPassActual.clear();
         txtPassNueva.clear();
         txtPassConfirmar.clear();
     }
 
+    /**
+     * Muestra una alerta modal al usuario.
+     *
+     * @param tipo    El tipo de alerta (WARNING, ERROR, INFORMATION).
+     * @param titulo  El título de la ventana de alerta.
+     * @param mensaje El contenido del mensaje.
+     */
     private void mostrarAlerta(Alert.AlertType tipo, String titulo, String mensaje) {
         Alert alerta = new Alert(tipo);
         alerta.setTitle(titulo);
