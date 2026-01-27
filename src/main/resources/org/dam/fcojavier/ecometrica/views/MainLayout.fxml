@@ -7,6 +7,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <BorderPane fx:id="contentPane"
             prefHeight="600.0" prefWidth="900.0"
             xmlns="http://javafx.com/javafx/21"
@@ -14,27 +19,58 @@
             fx:controller="org.dam.fcojavier.ecometrica.controllers.MainController">
 
     <left>
-        <VBox spacing="10.0" styleClass="sidebar">
-            <padding>
-                <Insets bottom="20.0" left="15.0" right="15.0" top="20.0"/>
+        <VBox spacing="0" styleClass="sidebar">
+            <VBox alignment="CENTER" spacing="10" styleClass="sidebar-header">
+                <padding>
+                    <Insets top="30" bottom="30" left="15" right="15"/>
+                </padding>
+                <ImageView fitHeight="70.0" fitWidth="70.0" preserveRatio="true">
+                    <image>
+                        <Image url="@logo.png" />
+                    </image>
+                </ImageView>
+                <Label text="EcoMetrica" styleClass="sidebar-title" />
+            </VBox>
+
+            <VBox spacing="10" VBox.vgrow="ALWAYS">
+                <padding>
+                    <Insets left="15" right="15" top="20"/>
+                </padding>
+
+                <Button fx:id="btnInicio" text="Inicio" onAction="#onMenuInicioClick" maxWidth="Infinity" styleClass="btn-menu">
+                    <graphic><FontIcon iconLiteral="mdal-home" iconSize="22"/></graphic>
+                </Button>
+
+                <Button fx:id="btnHuellas" text="Mis Huellas" onAction="#onMenuHuellasClick" maxWidth="Infinity" styleClass="btn-menu">
+                    <graphic><FontIcon iconLiteral="mdal-insert_chart_outlined" iconSize="22"/></graphic>
+                </Button>
+
+                <Button fx:id="btnHabitos" text="Mis Hábitos" onAction="#onMenuHabitosClick" maxWidth="Infinity" styleClass="btn-menu">
+                    <graphic><FontIcon iconLiteral="mdal-history" iconSize="22"/></graphic>
+                </Button>
+
+                <Button fx:id="btnEstadisticas" text="Estadísticas" onAction="#onMenuEstadisticasClick" maxWidth="Infinity" styleClass="btn-menu">
+                    <graphic><FontIcon iconLiteral="mdmz-pie_chart" iconSize="22"/></graphic>
+                </Button>
+            </VBox>
+
+            <VBox spacing="20" styleClass="sidebar-footer"> <padding>
+                <Insets bottom="25.0" left="15.0" right="15.0" top="25.0"/>
             </padding>
 
-            <Label text="EcoMetrica" styleClass="sidebar-title">
-                <VBox.margin>
-                    <Insets bottom="30.0" />
-                </VBox.margin>
-            </Label>
+                <HBox spacing="15" alignment="CENTER_LEFT" onMouseClicked="#onMenuPerfilClick" styleClass="sidebar-user-card">
+                    <StackPane styleClass="sidebar-avatar-medium"> <FontIcon iconLiteral="mdmz-person" iconSize="28" iconColor="white"/> </StackPane>
+                    <VBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS">
+                        <Label fx:id="lblBienvenida" text="Usuario" styleClass="sidebar-user-name"/>
+                        <Label text="Ver Perfil" styleClass="sidebar-view-profile"/>
+                    </VBox>
+                </HBox>
 
-            <Button text="Inicio" onAction="#onMenuInicioClick" maxWidth="Infinity" styleClass="btn-menu"/>
-            <Button text="Mis Huellas" onAction="#onMenuHuellasClick" maxWidth="Infinity" styleClass="btn-menu"/>
-            <Button text="Mis Hábitos" onAction="#onMenuHabitosClick" maxWidth="Infinity" styleClass="btn-menu"/>
-            <Button text="Estadísticas" onAction="#onMenuEstadisticasClick" maxWidth="Infinity" styleClass="btn-menu"/>
-            <Button text="Perfil" onAction="#onMenuPerfilClick" maxWidth="Infinity" styleClass="btn-menu"/>
-
-            <Label maxHeight="Infinity" VBox.vgrow="ALWAYS" />
-
-            <Label fx:id="lblBienvenida" text="Usuario" styleClass="sidebar-user-text"/>
-            <Button text="Cerrar Sesión" onAction="#onCerrarSesion" maxWidth="Infinity" styleClass="btn-menu-logout"/>
+                <Button text="Cerrar Sesión" onAction="#onCerrarSesion" maxWidth="Infinity" styleClass="btn-menu-logout">
+                    <VBox.margin><Insets top="5"/></VBox.margin>
+                    <graphic><FontIcon iconLiteral="mdal-exit_to_app" iconSize="18" iconColor="#EF9A9A"/></graphic>
+                </Button>
+            </VBox>
         </VBox>
     </left>
 
