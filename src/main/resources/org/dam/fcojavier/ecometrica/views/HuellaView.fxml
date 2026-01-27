@@ -53,7 +53,7 @@
                 <Label text="Cantidad" styleClass="label-campo"/>
                 <HBox spacing="10" alignment="CENTER_LEFT">
                     <TextField fx:id="txtValor" promptText="Ej: 150" HBox.hgrow="ALWAYS"/>
-                    <Label fx:id="lblUnidad" text="-" minWidth="30" style="-fx-text-fill: #8D6E63; -fx-font-weight: bold;"/>
+                    <Label fx:id="lblUnidad" text="-" minWidth="30" styleClass="label-unidad"/>
                 </HBox>
             </VBox>
 
@@ -66,7 +66,7 @@
 
             <VBox spacing="15">
                 <Button fx:id="btnGuardar" text="REGISTRAR IMPACTO" onAction="#onGuardarClick"
-                        defaultButton="true" styleClass="btn-primary" maxWidth="Infinity" style="-fx-font-size: 14px; -fx-padding: 12;"/>
+                        defaultButton="true" styleClass="btn-primary-large" maxWidth="Infinity"/>
 
                 <HBox spacing="10">
                     <Button fx:id="btnEliminar" text="Eliminar" onAction="#onEliminarClick"
@@ -101,14 +101,14 @@
                            styleClass="placeholder-subtitulo" wrapText="true" maxWidth="350"/>
                 </VBox>
 
-                <TableView fx:id="tablaHuellas" style="-fx-background-color: transparent;">
+                <TableView fx:id="tablaHuellas" styleClass="table-view-transparent">
                     <columns>
                         <TableColumn fx:id="colCategoria" text="Categoría" prefWidth="110"/>
-                        <TableColumn fx:id="colActividad" text="Actividad" prefWidth="150" style="-fx-alignment: CENTER-LEFT;"/>
+                        <TableColumn fx:id="colActividad" text="Actividad" prefWidth="150" styleClass="col-left"/>
                         <TableColumn fx:id="colFecha" text="Fecha" prefWidth="100"/>
                         <TableColumn fx:id="colValor" text="Consumo" prefWidth="80"/>
                         <TableColumn fx:id="colUnidad" text="Unidad" prefWidth="60"/>
-                        <TableColumn fx:id="colImpacto" text="Impacto (CO₂)" prefWidth="120" style="-fx-font-weight: bold;"/>
+                        <TableColumn fx:id="colImpacto" text="Impacto (CO₂)" prefWidth="120" styleClass="col-bold"/>
                     </columns>
 
                     <columnResizePolicy>
@@ -117,7 +117,7 @@
                 </TableView>
             </StackPane>
 
-            <Label text="* Selecciona una fila para editar o eliminar una huella." style="-fx-font-style: italic; -fx-text-fill: gray; -fx-font-size: 12px;">
+            <Label text="* Selecciona una fila para editar o eliminar una huella." styleClass="label-hint">
                 <VBox.margin><Insets top="5"/></VBox.margin>
             </Label>
         </VBox>

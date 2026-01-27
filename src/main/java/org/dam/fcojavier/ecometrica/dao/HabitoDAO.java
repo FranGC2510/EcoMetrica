@@ -8,6 +8,9 @@ import org.hibernate.query.Query;
 
 import java.util.List;
 
+/**
+ * DAO para la gestión de hábitos (actividades frecuentes) de los usuarios.
+ */
 public class HabitoDAO extends GenericDAO<Habito>{
     private static final String HQL_BUSCAR_POR_USUARIO = "FROM Habito h " +
             "JOIN FETCH h.actividad a " +
@@ -18,8 +21,9 @@ public class HabitoDAO extends GenericDAO<Habito>{
     }
 
     /**
-     * Recupera todos los hábitos de un usuario específico.
-     * Usamos JOIN FETCH para traer la Actividad y su Categoría (evitando LazyInitializationException).
+     * Obtiene los hábitos de un usuario con carga inmediata de relaciones.
+     * @param idUsuario ID del usuario.
+     * @return Lista de hábitos.
      */
     public List<Habito> findByUsuario(int idUsuario) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
@@ -30,19 +34,10 @@ public class HabitoDAO extends GenericDAO<Habito>{
     }
 
     /**
-     * Guarda o actualiza un hábito.
-     * Como usamos una clave compuesta, Hibernate a veces necesita ayuda para saber si es INSERT o UPDATE.
-     * merge() se encarga de decidirlo automáticamente.
+     * Persiste o actualiza un hábito usando merge para gestionar la clave compuesta.
+     * @param habito Entidad hábito.
      */
     public void saveOrUpdate(Habito habito) {
-        Transaction transaction = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            transaction = session.beginTransaction();
-            session.merge(habito); // merge es más seguro que saveOrUpdate para claves compuestas
-            transaction.commit();
-        } catch (Exception e) {
-            if (transaction != null) transaction.rollback();
-            e.printStackTrace();
-        }
+        update(habito);
     }
 }

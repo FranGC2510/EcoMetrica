@@ -74,4 +74,10 @@ public class MainController {
         System.out.println("Ir a estadísticas");
         cargarPantalla("EstadisticasView.fxml");
     }
+
+    @FXML
+    public void onMenuPerfilClick() {
+        System.out.println("Ir a perfil");
+        cargarPantalla("PerfilView.fxml");
+    }
 }

@@ -6,6 +6,9 @@ import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 
+/**
+ * Representa una actividad específica vinculada a una categoría de CO2.
+ */
 @Entity
 @Table(name = "actividad")
 public class Actividad {
@@ -27,42 +30,34 @@ public class Actividad {
     @OneToMany(mappedBy = "id_actividad")
     private Set<Huella> huellas = new LinkedHashSet<>();
 
+    // Getters y Setters
     public Integer getId() {
         return id;
     }
-
     public void setId(Integer id) {
         this.id = id;
     }
-
     public String getNombre() {
         return nombre;
     }
-
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-
     public Categoria getCategoria() {
         return categoria;
     }
-
     public void setCategoria(Categoria idCategoria) {
         this.categoria = idCategoria;
     }
-
     public Set<Habito> getHabitos() {
         return habitos;
     }
-
     public void setHabitos(Set<Habito> habitos) {
         this.habitos = habitos;
     }
-
     public Set<Huella> getHuellas() {
         return huellas;
     }
-
     public void setHuellas(Set<Huella> huellas) {
         this.huellas = huellas;
     }

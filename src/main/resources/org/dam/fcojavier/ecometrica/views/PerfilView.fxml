@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.dam.fcojavier.ecometrica.controllers.PerfilController"
+            styleClass="content-area">
+
+    <StackPane AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0"
+               AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0">
+
+        <VBox styleClass="profile-card" spacing="0">
+
+            <VBox styleClass="profile-header" spacing="15">
+                <StackPane styleClass="profile-avatar-bg">
+                    <FontIcon iconLiteral="mdmz-person" iconSize="60" iconColor="white"/>
+                </StackPane>
+
+                <VBox alignment="CENTER" spacing="2">
+                    <Label fx:id="lblNombreCompleto" text="Cargando..." styleClass="profile-header-name"/>
+                    <Label fx:id="lblEmailDisplay" text="..." styleClass="profile-header-email"/>
+                </VBox>
+            </VBox>
+
+            <VBox styleClass="profile-body" spacing="12">
+
+                <Label text="EDITAR INFORMACIÓN" styleClass="section-title"/>
+
+                <GridPane hgap="10" vgap="10">
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="50"/>
+                        <ColumnConstraints percentWidth="50"/>
+                    </columnConstraints>
+
+                    <VBox spacing="4" GridPane.columnIndex="0">
+                        <Label text="Nombre" styleClass="label-campo"/>
+                        <TextField fx:id="txtNombre"/>
+                    </VBox>
+
+                    <VBox spacing="4" GridPane.columnIndex="1">
+                        <Label text="Email" styleClass="label-campo"/>
+                        <TextField fx:id="txtEmail"/>
+                    </VBox>
+                </GridPane>
+
+                <Button text="Guardar Cambios" onAction="#onGuardarDatosClick"
+                        styleClass="btn-primary" maxWidth="Infinity" alignment="CENTER">
+                    <graphic>
+                        <FontIcon iconLiteral="mdmz-save" iconSize="16" iconColor="white"/>
+                    </graphic>
+                </Button>
+
+                <Separator style="-fx-padding: 5 0 5 0;"/>
+
+                <HBox alignment="CENTER_LEFT" spacing="8">
+                    <Label text="SEGURIDAD" styleClass="section-title"/>
+                    <FontIcon iconLiteral="mdal-lock" iconSize="14" iconColor="#D87D4A"/>
+                </HBox>
+
+                <VBox spacing="8">
+                    <VBox spacing="4">
+                        <Label text="Contraseña Actual" styleClass="label-campo"/>
+                        <PasswordField fx:id="txtPassActual"/>
+                    </VBox>
+
+                    <GridPane hgap="10" vgap="10">
+                        <columnConstraints>
+                            <ColumnConstraints percentWidth="50"/>
+                            <ColumnConstraints percentWidth="50"/>
+                        </columnConstraints>
+
+                        <VBox spacing="4" GridPane.columnIndex="0">
+                            <Label text="Nueva" styleClass="label-campo"/>
+                            <PasswordField fx:id="txtPassNueva"/>
+                        </VBox>
+
+                        <VBox spacing="4" GridPane.columnIndex="1">
+                            <Label text="Confirmar" styleClass="label-campo"/>
+                            <PasswordField fx:id="txtPassConfirmar"/>
+                        </VBox>
+                    </GridPane>
+                </VBox>
+
+                <Button text="Actualizar Contraseña" onAction="#onCambiarPassClick"
+                        styleClass="btn-outline" maxWidth="Infinity" alignment="CENTER">
+                    <graphic>
+                        <FontIcon iconLiteral="mdmz-security" iconSize="16" iconColor="#5D4037"/>
+                    </graphic>
+                </Button>
+
+            </VBox>
+        </VBox>
+    </StackPane>
+</AnchorPane>

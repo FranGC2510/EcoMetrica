@@ -13,6 +13,11 @@ public class UsuarioDAO extends GenericDAO<Usuario>{
         super(Usuario.class);
     }
 
+    /**
+     * Busca un usuario mediante su correo electrónico.
+     * @param email Correo a buscar.
+     * @return El Usuario encontrado o null.
+     */
     public Usuario findByEmail(String email) {
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             Query<Usuario> query = session.createQuery(HQL_BUSCAR_POR_EMAIL, Usuario.class);

@@ -12,92 +12,119 @@ import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 
+/**
+ * Servicio que orquestra el cálculo de emisiones y estadísticas de huella de carbono.
+ */
 public class HuellaService {
 
     private final HuellaDAO huellaDAO;
     private final CategoriaDAO categoriaDAO;
     private final ActividadDAO actividadDAO;
 
+    /**
+     * Constructor por defecto. Inicializa los DAOs necesarios.
+     */
     public HuellaService() {
         this.huellaDAO = new HuellaDAO();
         this.categoriaDAO = new CategoriaDAO();
         this.actividadDAO = new ActividadDAO();
     }
 
-    // --- MÉTODOS DE LECTURA (Para llenar los ComboBox) ---
+    // Métodos de Consulta Maestra
 
+    /**
+     * Obtiene todas las categorías disponibles.
+     *
+     * @return Lista de todas las categorías.
+     */
     public List<Categoria> obtenerTodasCategorias() {
         return categoriaDAO.findAll();
     }
 
+    /**
+     * Obtiene las actividades asociadas a una categoría específica.
+     *
+     * @param categoria La categoría de la cual se quieren obtener las actividades.
+     * @return Lista de actividades de la categoría dada.
+     */
     public List<Actividad> obtenerActividadesPorCategoria(Categoria categoria) {
         return actividadDAO.findByCategoria(categoria);
     }
 
-    // --- MÉTODO DE ESCRITURA (Lógica principal) ---
-
     /**
-     * Calcula el impacto y guarda el registro de huella.
+     * Registra un nuevo impacto ambiental.
+     * Automáticamente asigna la unidad basada en la categoría de la actividad.
      *
      * @param usuario   El usuario que está en sesión.
      * @param actividad La actividad seleccionada (ej: Conducir).
      * @param valor     El dato numérico introducido (ej: 50 km).
      * @param fecha     La fecha seleccionada.
+     * @return El valor calculado de la huella de carbono.
      */
     public double registrarHuella(Usuario usuario, Actividad actividad, double valor, LocalDate fecha) {
         Huella nuevaHuella = new Huella();
         nuevaHuella.setId_usuario(usuario);
         nuevaHuella.setId_actividad(actividad);
-
-        // CORRECCIÓN IMPORTANTE: Guardamos el input del usuario (ej: 150), no el CO2.
         nuevaHuella.setValor(valor);
 
-        // CORRECCIÓN IMPORTANTE: Guardamos la unidad de la categoría (ej: "km", "kWh").
         nuevaHuella.setUnidad(actividad.getCategoria().getUnidad());
-
         nuevaHuella.setFecha(fecha);
 
-        // 2. Guardamos en base de datos
         huellaDAO.save(nuevaHuella);
 
-        // 3. Calculamos y devolvemos el impacto SOLO para informar al usuario (Feedback)
-        // Fórmula: Valor * Factor de Emisión
         return valor * actividad.getCategoria().getFactorEmision();
     }
 
     /**
      * Recupera el historial de huellas de un usuario.
+     *
+     * @param usuario El usuario del cual se quieren obtener las huellas.
+     * @return Lista de huellas asociadas al usuario.
      */
     public List<Huella> obtenerHuellasDelUsuario(Usuario usuario) {
-        // Delegamos al DAO que ya tiene el método findByUsuario implementado
         return huellaDAO.findByUsuario(usuario.getId());
     }
 
+    /**
+     * Elimina una huella específica.
+     *
+     * @param huella La huella a eliminar.
+     */
     public void eliminarHuella(Huella huella) {
         huellaDAO.delete(huella);
     }
 
     /**
      * Actualiza una huella existente y recalcula su impacto si cambiaron los valores.
+     *
+     * @param huella La huella con los datos actualizados.
+     * @return El nuevo valor calculado de la huella de carbono.
      */
     public double actualizarHuella(Huella huella) {
-        // Recalculamos la unidad y el valor por seguridad, por si cambió la actividad
         huella.setUnidad(huella.getId_actividad().getCategoria().getUnidad());
-
         huellaDAO.update(huella);
-
-        // Devolvemos el impacto recalculado
         return huella.getValor() * huella.getId_actividad().getCategoria().getFactorEmision();
     }
 
+    // --- Métodos de Estadística
+
+    /**
+     * Calcula el impacto total de un usuario.
+     *
+     * @param usuario El usuario para el cual calcular el impacto total.
+     * @return El impacto total de huella de carbono del usuario.
+     */
     public double calcularImpactoTotal(Usuario usuario) {
         return huellaDAO.obtenerImpactoTotal(usuario.getId());
     }
 
     /**
-     * Devuelve los datos listos para un PieChart (Nombre -> Valor)
+     * Devuelve los datos listos para un PieChart (Nombre -> Valor).
      * JavaFX usa 'PieChart.Data', pero para no mezclar UI con Service,
      * devolvemos la lista cruda del DAO o un Map. Por sencillez, pasamos la lista del DAO.
+     *
+     * @param usuario El usuario para el cual obtener las estadísticas.
+     * @return Lista de objetos con los datos estadísticos por categoría.
      */
     public List<Object[]> obtenerEstadisticasPorCategoria(Usuario usuario) {
         return huellaDAO.obtenerImpactoPorCategoria(usuario.getId());
@@ -105,6 +132,11 @@ public class HuellaService {
 
     /**
      * Calcula el impacto en un rango de fechas personalizado.
+     *
+     * @param usuario El usuario para el cual calcular el impacto.
+     * @param inicio  Fecha de inicio del rango.
+     * @param fin     Fecha de fin del rango.
+     * @return El impacto total en el rango de fechas especificado.
      */
     public double calcularImpactoRango(Usuario usuario, LocalDate inicio, LocalDate fin) {
         return huellaDAO.obtenerImpactoPorRangoFechas(usuario.getId(), inicio, fin);
@@ -112,7 +144,8 @@ public class HuellaService {
 
     /**
      * Obtiene la media de la comunidad para comparar.
-     * @return Lista de [Categoría, Media]
+     *
+     * @return Valor medio de la huella de carbono de la comunidad en el mes actual.
      */
     public Double obtenerMediaComunidadMesActual() {
         LocalDate hoy = LocalDate.now();
@@ -123,17 +156,23 @@ public class HuellaService {
     }
 
     /**
-     * Obtiene la media de impacto del usuario por categoría.
-     * Útil para comparar con la media global.
+     * Obtiene las 3 actividades con mayor impacto para un usuario.
+     *
+     * @param usuario El usuario para el cual obtener el top 3 de actividades.
+     * @return Lista de objetos con las 3 actividades principales y sus impactos.
      */
-    public List<Object[]> obtenerMediaImpactoUsuario(Usuario usuario) {
-        return huellaDAO.obtenerMediaImpactoPorCategoria(usuario.getId());
-    }
-
     public List<Object[]> obtenerTop3Actividades(Usuario usuario) {
         return huellaDAO.obtenerTop3Actividades(usuario.getId());
     }
 
+    /**
+     * Obtiene estadísticas por categoría dentro de un rango de fechas específico.
+     *
+     * @param usuario El usuario para el cual obtener las estadísticas.
+     * @param inicio  Fecha de inicio del rango.
+     * @param fin     Fecha de fin del rango.
+     * @return Lista de objetos con estadísticas por categoría en el rango dado.
+     */
     public List<Object[]> obtenerEstadisticasPorCategoriaYRango(Usuario usuario, LocalDate inicio, LocalDate fin) {
         return huellaDAO.obtenerImpactoPorCategoriaYRango(usuario.getId(), inicio, fin);
     }

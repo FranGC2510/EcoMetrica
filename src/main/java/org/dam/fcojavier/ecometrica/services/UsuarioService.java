@@ -5,53 +5,88 @@ import org.dam.fcojavier.ecometrica.entities.Usuario;
 import org.dam.fcojavier.ecometrica.utils.PasswordUtilidades;
 
 /**
- * Servicio para gestionar la lógica de negocio relacionada con Usuarios.
- * Actúa de intermediario entre el Controlador (Ventana) y el DAO (Base de Datos).
+ * Servicio encargado de la lógica de autenticación y gestión de usuarios.
+ * Implementa las reglas de negocio para el registro y el inicio de sesión.
  */
 public class UsuarioService {
 
     private final UsuarioDAO usuarioDAO;
 
+    /**
+     * Constructor por defecto. Inicializa el DAO de usuario.
+     */
     public UsuarioService() {
         this.usuarioDAO = new UsuarioDAO();
     }
 
     /**
-     * Lógica de Login:
-     * 1. Busca si el usuario existe.
-     * 2. Si existe, comprueba la contraseña.
-     * @return El usuario si el login es correcto, o null si falla.
+     * Valida las credenciales de un usuario.
+     *
+     * @param email    Correo electrónico del usuario.
+     * @param password Contraseña en texto plano.
+     * @return El objeto {@link Usuario} si las credenciales son válidas, null en caso contrario.
      */
     public Usuario login(String email, String password) {
-        // 1. Llamamos al DAO solo para pedir datos (sin lógica)
+        if (email == null || password == null) return null;
+
         Usuario usuario = usuarioDAO.findByEmail(email);
 
-        // 2. Si existe, verificamos el hash de la contraseña usando BCrypt
-        if (usuario != null) {
-            if (PasswordUtilidades.checkPassword(password, usuario.getContraseña())) {
-                return usuario;
-            }
+        if (usuario != null && PasswordUtilidades.checkPassword(password, usuario.getContraseña())) {
+            return usuario;
         }
 
-        return null; // Login Fallido (Usuario no existe o pass incorrecta)
+        return null;
     }
 
     /**
-     * Lógica completa de registro.
-     * @return true si se registró correctamente, false si el email ya existía.
+     * Registra un nuevo usuario aplicando las políticas de seguridad y unicidad.
+     *
+     * @param usuario       Objeto con los datos del usuario.
+     * @param passwordPlana Contraseña sin hashear proporcionada en el formulario.
+     * @return true si el registro es exitoso, false si el email ya existe.
      */
     public boolean registrarUsuario(Usuario usuario, String passwordPlana) {
-        // 1. Regla de negocio: No puede haber dos emails iguales
         if (usuarioDAO.findByEmail(usuario.getEmail()) != null) {
             return false; // El usuario ya existe
         }
 
-        // 2. Regla de seguridad: Hashear la contraseña AQUÍ, no en el controlador
         String hash = PasswordUtilidades.hashPassword(passwordPlana);
         usuario.setContraseña(hash);
 
-        // 3. Persistencia
         usuarioDAO.save(usuario);
         return true;
+    }
+
+    /**
+     * Actualiza los datos básicos (nombre, email) usando el método update del GenericDAO.
+     */
+    public boolean actualizarPerfil(Usuario usuario) {
+        try {
+            usuarioDAO.update(usuario);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Gestiona el cambio de contraseña: verifica la actual, hashea la nueva y guarda.
+     */
+    public boolean cambiarContrasena(Usuario usuario, String passActual, String passNueva) {
+        if (!PasswordUtilidades.checkPassword(passActual, usuario.getContraseña())) {
+            return false;
+        }
+
+        String nuevoHash = PasswordUtilidades.hashPassword(passNueva);
+        usuario.setContraseña(nuevoHash);
+
+        try {
+            usuarioDAO.update(usuario);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
