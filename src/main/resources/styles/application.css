@@ -737,3 +737,8 @@
     -fx-background-insets: 0;
     /* El color (-fx-accent) lo controlamos desde el Java para cambiarlo dinámicamente */
 }
+
+.icono-titulo {
+    -fx-icon-color: #D87D4A; /* O el color que elijas */
+    -fx-icon-size: 28px;
+}

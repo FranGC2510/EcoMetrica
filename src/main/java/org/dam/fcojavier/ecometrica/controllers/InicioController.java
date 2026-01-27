@@ -8,12 +8,14 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import org.dam.fcojavier.ecometrica.dao.RecomendacionDAO;
 import org.dam.fcojavier.ecometrica.entities.Huella;
 import org.dam.fcojavier.ecometrica.entities.Recomendacion;
 import org.dam.fcojavier.ecometrica.entities.Usuario;
 import org.dam.fcojavier.ecometrica.services.HuellaService;
 import org.dam.fcojavier.ecometrica.utils.Sesion;
+import org.kordamp.ikonli.javafx.FontIcon;
 
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
@@ -96,33 +98,39 @@ public class InicioController {
     private void cargarComparativa(Usuario usuario) {
         // 1. Calcular impacto del mes ACTUAL
         LocalDate hoy = LocalDate.now();
-        LocalDate inicioMes = hoy.with(TemporalAdjusters.firstDayOfMonth());
-        LocalDate finMes = hoy.with(TemporalAdjusters.lastDayOfMonth());
+        LocalDate inicio = hoy.with(TemporalAdjusters.firstDayOfMonth());
+        LocalDate fin = hoy.with(TemporalAdjusters.lastDayOfMonth());
 
-        double impactoMesActual = huellaService.calcularImpactoRango(usuario, inicioMes, finMes);
+        double miHuella = huellaService.calcularImpactoRango(usuario, inicio, fin);
 
-        // 2. Calcular porcentaje respecto a la meta
-        double porcentaje = impactoMesActual / META_MENSUAL_KG;
+        // 2. Media de la Comunidad (Dato real calculado arriba)
+        double mediaComunidad = huellaService.obtenerMediaComunidadMesActual();
+
+        // Si la app es nueva y la media es 0, usamos 1 para no romper la división
+        if (mediaComunidad == 0) mediaComunidad = 1.0;
+
+        // 3. Comparación
+        double porcentaje = miHuella / mediaComunidad;
 
         // 3. Configurar la Barra de Progreso
         // La barra va de 0.0 a 1.0. Si nos pasamos, la dejamos en 1.0 (llena)
         barraProgreso.setProgress(Math.min(porcentaje, 1.0));
 
-        // 4. Cambiar color según el estado (Verde = Bien, Naranja = Cuidado, Rojo = Mal)
-        // Usamos estilos en línea para cambiar el color de la barra (-fx-accent) dinámicamente
+        lblValoresAbsolutos.setText(String.format("Tú: %.1f kg / Media: %.1f kg", miHuella, mediaComunidad));
+
         if (porcentaje < 0.5) {
             barraProgreso.setStyle("-fx-accent: #66BB6A; -fx-control-inner-background: #EFEBE9;"); // Verde
             lblPorcentajeComparacion.setText("¡Excelente! Solo llevas el " + String.format("%.0f%%", porcentaje * 100));
         } else if (porcentaje < 0.9) {
             barraProgreso.setStyle("-fx-accent: #FFA726; -fx-control-inner-background: #EFEBE9;"); // Naranja
             lblPorcentajeComparacion.setText("Atención, estás al " + String.format("%.0f%%", porcentaje * 100));
-        } else {
+        } else if (porcentaje <=1.0){
             barraProgreso.setStyle("-fx-accent: #EF5350; -fx-control-inner-background: #EFEBE9;"); // Rojo
+            lblPorcentajeComparacion.setText("Estas justamente al (" + String.format("%.0f%%", porcentaje * 100) + ")");
+        } else{
+            barraProgreso.setStyle("-fx-accent: #ed0992; -fx-control-inner-background: #EFEBE9;"); // Rojo
             lblPorcentajeComparacion.setText("Has superado la media (" + String.format("%.0f%%", porcentaje * 100) + ")");
         }
-
-        // 5. Texto de valores absolutos
-        lblValoresAbsolutos.setText(String.format("%.1f kg / %.0f kg", impactoMesActual, META_MENSUAL_KG));
     }
 
     private VBox crearEscalonPodio(Object[] datos, int ranking) {
@@ -134,27 +142,40 @@ public class InicioController {
         // --- CONFIGURACIÓN DE DIMENSIONES Y COLORES (Igual que antes) ---
         String colorFondo;
         int altura;
-        String medalla;
         String bordeColor;
+
+        // Variables para el Icono Vectorial
+        String iconLiteral;
+        String iconColorHex;
+        int iconSize;
 
         switch (ranking) {
             case 1: // ORO
                 colorFondo = "#FFF8E1";
                 bordeColor = "#FFD54F";
                 altura = 200;
-                medalla = "🥇";
+
+                iconLiteral = "mdal-emoji_events"; // Icono de Copa/Trofeo
+                iconColorHex = "#FBC02D";          // Dorado intenso
+                iconSize = 48;
                 break;
             case 2: // PLATA
                 colorFondo = "#F5F5F5";
                 bordeColor = "#BDBDBD";
                 altura = 160;
-                medalla = "🥈";
+
+                iconLiteral = "mdmz-military_tech"; // Icono de Medalla
+                iconColorHex = "#90A4AE";           // Gris Plata
+                iconSize = 40;
                 break;
             default: // BRONCE
                 colorFondo = "#EFEBE9";
                 bordeColor = "#8D6E63";
                 altura = 130;
-                medalla = "🥉";
+
+                iconLiteral = "mdmz-military_tech"; // Icono de Medalla
+                iconColorHex = "#8D6E63";           // Marrón Bronce
+                iconSize = 40;
                 break;
         }
 
@@ -170,12 +191,14 @@ public class InicioController {
         escalon.setMinHeight(altura);
         escalon.setMaxHeight(altura);
 
-        escalon.setStyle("-fx-background-color: " + colorFondo + "; " +
+        String estiloBase = "-fx-background-color: " + colorFondo + "; " +
                 "-fx-background-radius: 15; " +
                 "-fx-border-color: " + bordeColor + "; " +
                 "-fx-border-width: 2; " +
                 "-fx-border-radius: 15; " +
-                "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);");
+                "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);";
+
+        escalon.setStyle(estiloBase);
 
         // --- NUEVO: INTERACTIVIDAD ---
         // 1. Cambiar cursor al pasar por encima
@@ -190,11 +213,13 @@ public class InicioController {
         escalon.setOnMouseEntered(e -> escalon.setStyle(
                 "-fx-background-color: " + colorFondo + "; " +
                         "-fx-background-radius: 15; " +
-                        "-fx-border-color: -fx-color-primario; " + // Borde naranja al pasar ratón
+                        "-fx-border-color: -fx-color-primario; " + // Naranja al pasar ratón
                         "-fx-border-width: 2; " +
                         "-fx-border-radius: 15; " +
-                        "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 0, 4);" // Más sombra
+                        "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 0, 4);"
         ));
+
+        escalon.setOnMouseExited(e -> escalon.setStyle(estiloBase));
 
         escalon.setOnMouseExited(e -> escalon.setStyle(
                 "-fx-background-color: " + colorFondo + "; " +
@@ -205,10 +230,12 @@ public class InicioController {
                         "-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 2);"
         ));
 
-        // --- CONTENIDO (Igual que antes) ---
-        Label lblMedalla = new Label(medalla);
-        lblMedalla.setStyle("-fx-font-size: 36px; -fx-padding: -5 0 0 0;");
+        // 1. EL ICONO (Sustituye al Label del emoji)
+        FontIcon iconoMedalla = new FontIcon(iconLiteral);
+        iconoMedalla.setIconSize(iconSize);
+        iconoMedalla.setIconColor(Color.web(iconColorHex)); // Convertimos Hex String a Color Object
 
+        // 2. TEXTOS
         Label lblNombre = new Label(actividad);
         lblNombre.setWrapText(true);
         lblNombre.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
@@ -217,7 +244,8 @@ public class InicioController {
         Label lblValor = new Label(String.format("%.0f kg", impacto));
         lblValor.setStyle("-fx-text-fill: -fx-color-primario; -fx-font-weight: bold; -fx-font-size: 20px;");
 
-        escalon.getChildren().addAll(lblMedalla, lblNombre, lblValor);
+        // Añadimos todo al VBox
+        escalon.getChildren().addAll(iconoMedalla, lblNombre, lblValor);
 
         return escalon;
     }

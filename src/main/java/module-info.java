@@ -15,6 +15,7 @@ module org.dam.fcojavier.ecometrica {
     requires com.github.librepdf.openpdf; // OpenPDF
     requires jbcrypt;
     requires java.desktop;
+    requires org.kordamp.ikonli.material2;
 
     opens org.dam.fcojavier.ecometrica to javafx.fxml;
     opens org.dam.fcojavier.ecometrica.controllers to javafx.fxml, javafx.base;

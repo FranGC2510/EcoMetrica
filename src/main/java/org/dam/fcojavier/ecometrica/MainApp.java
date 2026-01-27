@@ -28,10 +28,20 @@ public class MainApp extends Application {
         stage.show();
     }
 
+    /**
+     * Método del Ciclo de Vida de JavaFX.
+     * Se ejecuta AUTOMÁTICAMENTE justo antes de que el proceso muera.
+     */
     @Override
     public void stop() throws Exception {
-        // Cerramos la conexión al salir de la app
-        HibernateUtil.shutdown();
+        System.out.println("PARANDO APLICACIÓN...");
+        try{
+            HibernateUtil.shutdown();
+            System.out.println("Conexión a Base de Datos cerrada con éxito.");
+        }catch (Exception e){
+            System.err.println("Error al cerrar la conexión: " + e.getMessage());
+        }
+
         super.stop();
     }
 
