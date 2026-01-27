@@ -17,8 +17,8 @@ import java.net.URL;
  */
 public class VistaNavegador {
 
-    private static final double DEFAULT_WIDTH = 900;
-    private static final double DEFAULT_HEIGHT = 600;
+    private static final double DEFAULT_WIDTH = 750;
+    private static final double DEFAULT_HEIGHT = 700;
     private static final String MAIN_CSS = "/styles/application.css";
 
     /**
@@ -44,28 +44,38 @@ public class VistaNavegador {
         try {
             Stage stage = (Stage) currentScene.getWindow();
 
+            // El fxmlPath debe ser algo como "/org/dam/fcojavier/ecometrica/views/MainLayout.fxml"
             URL fxmlLocation = MainApp.class.getResource(fxmlPath);
+
             if (fxmlLocation == null) {
-                throw new IOException("No se encontró el archivo FXML en: " + fxmlPath);
+                throw new IOException("No se encontró el archivo FXML en la ruta: " + fxmlPath);
             }
 
             FXMLLoader loader = new FXMLLoader(fxmlLocation);
             Parent root = loader.load();
 
-            Scene newScene = new Scene(root, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+            // Actualizamos el contenido de la escena existente en lugar de crear una nueva
+            // Esto mantiene la ventana actual y permite manipular el Stage
+            currentScene.setRoot(root);
 
-            // Carga segura de CSS
+            currentScene.getStylesheets().clear(); // Limpiamos para evitar duplicados
             URL cssResource = MainApp.class.getResource(MAIN_CSS);
             if (cssResource != null) {
-                newScene.getStylesheets().add(cssResource.toExternalForm());
+                currentScene.getStylesheets().add(cssResource.toExternalForm());
             }
 
-            stage.setScene(newScene);
-            stage.centerOnScreen();
-            stage.show();
+            // --- LÓGICA DE PANTALLA COMPLETA / MAXIMIZADO ---
+            if (fxmlPath.contains("MainLayout.fxml")) {
+                stage.setFullScreen(true);
+            } else {
+                stage.setFullScreen(false);
+                stage.setWidth(DEFAULT_WIDTH);
+                stage.setHeight(DEFAULT_HEIGHT);
+                stage.centerOnScreen();
+            }
 
         } catch (IOException e) {
-            System.err.println("Error al navegar a la vista: " + fxmlPath);
+            System.err.println("ERROR: No se pudo cargar la vista: " + fxmlPath);
             e.printStackTrace();
         }
     }

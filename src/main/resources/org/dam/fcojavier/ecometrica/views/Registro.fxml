@@ -8,48 +8,41 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" spacing="15.0"
-      xmlns="http://javafx.com/javafx/21"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="org.dam.fcojavier.ecometrica.controllers.RegistroController"
-      styleClass="login-container">
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.layout.GridPane?>
+<VBox styleClass="login-root" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.dam.fcojavier.ecometrica.controllers.RegistroController">
+    <VBox styleClass="login-card" maxWidth="500">
+        <ImageView fitHeight="100.0" fitWidth="100.0" styleClass="login-logo">
+            <image>
+                <Image url="@logo.png" />
+            </image>
+        </ImageView>
 
-    <padding>
-        <Insets bottom="30.0" left="40.0" right="40.0" top="30.0"/>
-    </padding>
+        <Label text="Crear Cuenta" styleClass="titulo-app" />
+        <Label text="Únete a EcoMetrica" styleClass="subtitulo" />
 
-    <Label text="Crear Cuenta" styleClass="titulo-app">
-        <font>
-            <Font name="System Bold" size="24.0"/>
-        </font>
-    </Label>
+        <GridPane hgap="15" vgap="15">
+            <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                <Label text="Nombre Completo" styleClass="label-campo" />
+                <TextField fx:id="txtNombre" styleClass="input-login"/>
+            </VBox>
+            <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                <Label text="Email" styleClass="label-campo" />
+                <TextField fx:id="txtEmail" styleClass="input-login"/>
+            </VBox>
+            <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                <Label text="Contraseña" styleClass="label-campo" />
+                <PasswordField fx:id="txtPassword" styleClass="input-login"/>
+            </VBox>
+            <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                <Label text="Confirmar" styleClass="label-campo" />
+                <PasswordField fx:id="txtConfirmPassword" styleClass="input-login"/>
+            </VBox>
+        </GridPane>
 
-    <Label text="Únete a EcoMetrica" styleClass="subtitulo"/>
-
-    <VBox alignment="CENTER_LEFT" maxWidth="300.0" spacing="5.0">
-        <Label text="Nombre Completo" />
-        <TextField fx:id="txtNombre" promptText="Tu nombre" />
+        <Label fx:id="lblMensaje" wrapText="true" />
+        <Button onAction="#onRegistrarClick" styleClass="btn-primary" text="REGISTRARSE" maxWidth="Infinity" />
+        <Button onAction="#onVolverClick" styleClass="btn-flat" text="Volver al Login" />
     </VBox>
-
-    <VBox alignment="CENTER_LEFT" maxWidth="300.0" spacing="5.0">
-        <Label text="Email" />
-        <TextField fx:id="txtEmail" promptText="ejemplo@correo.com" />
-    </VBox>
-
-    <VBox alignment="CENTER_LEFT" maxWidth="300.0" spacing="5.0">
-        <Label text="Contraseña" />
-        <PasswordField fx:id="txtPassword" promptText="********" />
-    </VBox>
-
-    <VBox alignment="CENTER_LEFT" maxWidth="300.0" spacing="5.0">
-        <Label text="Confirmar Contraseña" />
-        <PasswordField fx:id="txtConfirmPassword" promptText="********" />
-    </VBox>
-
-    <Label fx:id="lblMensaje" wrapText="true" maxWidth="300.0"/>
-
-    <Button text="REGISTRARSE" onAction="#onRegistrarClick" defaultButton="true" maxWidth="300.0" styleClass="btn-primary"/>
-
-    <Button text="Volver al Login" onAction="#onVolverClick" styleClass="btn-flat"/>
-
 </VBox>

@@ -50,11 +50,19 @@ public class RegistroController {
         boolean exito = usuarioService.registrarUsuario(nuevoUsuario, pass);
 
         if (exito) {
-            lblMensaje.setText("¡Usuario registrado con éxito!");
-            lblMensaje.setStyle("-fx-text-fill: -fx-color-exito;");
-            limpiarFormulario();
+            // 1. Guardar el usuario recién creado en la Sesión global
+            org.dam.fcojavier.ecometrica.utils.Sesion.getInstancia().login(nuevoUsuario);
+
+            // 2. Redirigir directamente al Dashboard principal
+            try {
+                // Obtenemos la escena actual a través de cualquier campo (ej. txtEmail)
+                VistaNavegador.cargarVista(txtEmail.getScene(), "/org/dam/fcojavier/ecometrica/views/MainLayout.fxml");
+            } catch (Exception e) {
+                lblMensaje.setText("Error al entrar a la aplicación: " + e.getMessage());
+                e.printStackTrace();
+            }
         } else {
-            mostrarError("El email ya está registrado.");
+            lblMensaje.setText("Error: El email ya está registrado.");
         }
     }
 

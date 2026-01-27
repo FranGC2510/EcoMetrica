@@ -21,6 +21,29 @@
     -fx-font-size: 14px;
 }
 
+/* Fondos y Contenedores */
+.login-root {
+    -fx-background-color: #FAF9F6; /* Blanco Cálido / Hueso  */
+    -fx-alignment: CENTER;
+}
+
+.login-card {
+    -fx-background-color: #FFFFFF;
+    -fx-padding: 40;
+    -fx-spacing: 20;
+    -fx-alignment: CENTER;
+    -fx-max-width: 450;
+    -fx-background-radius: 20;
+    -fx-effect: dropshadow(three-pass-box, rgba(78, 52, 46, 0.15), 20, 0, 0, 10);
+}
+
+/* Estilo para el logo en login/registro */
+.login-logo {
+    -fx-image: url("/org/dam/fcojavier/ecometrica/views/logo.png");
+    -fx-preserve-ratio: true;
+    -fx-smooth: true;
+}
+
 /* ==============================================
    2. COMPONENTES GENERALES (Botones y Textos)
    ============================================== */
@@ -795,4 +818,25 @@
     -fx-text-fill: -fx-color-primario;
     -fx-font-weight: bold;
     -fx-font-size: 20px;
+}
+
+/* Estilos específicos para los campos de Login y Registro */
+.input-login {
+    -fx-font-size: 16px;          /* Aumenta el tamaño de la letra al escribir */
+    -fx-pref-height: 45px;        /* Aumenta la altura total de la caja */
+    -fx-padding: 0 15 0 15;       /* Más espacio a los lados del texto */
+    -fx-background-radius: 10px;  /* Curvatura ligeramente más pronunciada */
+    -fx-border-radius: 10px;
+}
+
+/* Opcional: Aumentar el tamaño del texto dentro del botón de estas pantallas */
+.login-card .btn-primary {
+    -fx-font-size: 15px;
+    -fx-pref-height: 45px;
+}
+
+/* Opcional: Aumentar el tamaño de las etiquetas (Email, Contraseña) solo en la tarjeta */
+.login-card .label-campo {
+    -fx-font-size: 14px;
+    -fx-padding: 0 0 3 0;
 }
