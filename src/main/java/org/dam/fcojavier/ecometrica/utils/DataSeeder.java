@@ -64,7 +64,7 @@ public class DataSeeder {
      * Se ejecuta de forma independiente para no interferir con los datos maestros.
      */
     public void sembrarUsuariosDePrueba() {
-        if (usuarioDAO.findByEmail("fran@gmail.com") != null) {
+        if (usuarioDAO.findByEmail("ana@gmail.com") != null) {
             System.out.println(">> DataSeeder: Usuarios de prueba ya existen. Omitiendo.");
             return;
         }
@@ -79,10 +79,10 @@ public class DataSeeder {
             String passHash = "$2a$12$R9h/cIPz0gi.URNNXRfx.O83.v.m.Kx.n.L.q.w.z.y.";
 
             // --- 1. Crear Usuarios ---
-            Usuario ana = crearUsuario(session, "Ana García", "ana@gmail.com", passHash, "2023-01-15");
-            Usuario carlos = crearUsuario(session, "Carlos Ruiz", "carlos@example.com", passHash, "2023-02-20");
-            Usuario elena = crearUsuario(session, "Elena Torres", "elena@example.com", passHash, "2023-03-10");
-            Usuario david = crearUsuario(session, "David Mola", "david@example.com", passHash, "2023-04-05");
+            Usuario ana = crearUsuario(session, "Ana García", "ana@gmail.com", passHash, LocalDate.now().minusMonths(6));
+            Usuario carlos = crearUsuario(session, "Carlos Ruiz", "carlos@example.com", passHash, LocalDate.now().minusMonths(5));
+            Usuario elena = crearUsuario(session, "Elena Torres", "elena@example.com", passHash, LocalDate.now().minusMonths(4));
+            Usuario david = crearUsuario(session, "David Mola", "david@example.com", passHash, LocalDate.now().minusMonths(3));
 
             // --- 2. Recuperar Actividades (Necesarias para Huellas y Hábitos) ---
             // Asumimos que los nombres coinciden con los creados en sembrarDatos()
@@ -95,44 +95,46 @@ public class DataSeeder {
             Actividad ducha = buscarActividad(session, "Consumo de agua potable"); // Usamos agua para ducha
             Actividad residuos = buscarActividad(session, "Generar residuos domésticos");
 
-            // --- 3. Crear Huellas ---
+            // --- 3. Crear Huellas (Fechas dinámicas en el último mes) ---
+            LocalDate hoy = LocalDate.now();
+            
             // Ana
-            crearHuella(session, ana, coche, 150.0, "km", "2023-10-01");
-            crearHuella(session, ana, electricidad, 200.0, "kWh", "2023-10-05");
-            crearHuella(session, ana, carne, 5.0, "kg", "2023-10-10");
-            crearHuella(session, ana, ducha, 100.0, "m3", "2023-10-15"); // Ojo unidad m3 según categoría Agua
+            crearHuella(session, ana, coche, 487.0, "km", hoy.minusDays(2));
+            crearHuella(session, ana, electricidad, 780.0, "kWh", hoy.minusDays(5));
+            crearHuella(session, ana, carne, 5.0, "kg", hoy.minusDays(10));
+            crearHuella(session, ana, ducha, 100.0, "m3", hoy.minusDays(15)); 
 
             // Carlos
-            crearHuella(session, carlos, coche, 400.0, "km", "2023-10-02");
-            crearHuella(session, carlos, gas, 50.0, "kWh", "2023-10-12"); // Gas usa unidad de Energía
-            crearHuella(session, carlos, carne, 8.0, "kg", "2023-10-18");
+            crearHuella(session, carlos, coche, 687.0, "km", hoy.minusDays(3));
+            crearHuella(session, carlos, gas, 50.0, "kWh", hoy.minusDays(12)); 
+            crearHuella(session, carlos, carne, 8.0, "kg", hoy.minusDays(18));
 
             // Elena
-            crearHuella(session, elena, bus, 20.0, "km", "2023-10-03");
-            crearHuella(session, elena, veggie, 15.0, "kg", "2023-10-07");
-            crearHuella(session, elena, electricidad, 120.0, "kWh", "2023-10-14");
+            crearHuella(session, elena, bus, 20.0, "km", hoy.minusDays(4));
+            crearHuella(session, elena, veggie, 15.0, "kg", hoy.minusDays(7));
+            crearHuella(session, elena, electricidad, 276.0, "kWh", hoy.minusDays(14));
 
             // David
-            crearHuella(session, david, electricidad, 350.0, "kWh", "2023-10-04");
-            crearHuella(session, david, ducha, 200.0, "m3", "2023-10-09");
-            crearHuella(session, david, residuos, 10.0, "kg", "2023-10-22");
+            crearHuella(session, david, electricidad, 350.0, "kWh", hoy.minusDays(6));
+            crearHuella(session, david, ducha, 291.0, "m3", hoy.minusDays(9));
+            crearHuella(session, david, residuos, 79.0, "kg", hoy.minusDays(22));
 
-            // --- 4. Crear Hábitos ---
+            // --- 4. Crear Hábitos (Fechas dinámicas) ---
             // Ana
-            crearHabito(session, ana, coche, 5, "semanal", "2023-10-25");
-            crearHabito(session, ana, residuos, 1, "semanal", "2023-10-28");
+            crearHabito(session, ana, coche, 5, "semanal", hoy.minusDays(1));
+            crearHabito(session, ana, residuos, 1, "semanal", hoy.minusDays(3));
 
             // Carlos
-            crearHabito(session, carlos, coche, 2, "diaria", "2023-10-30");
-            crearHabito(session, carlos, carne, 4, "semanal", "2023-10-29");
+            crearHabito(session, carlos, coche, 2, "diaria", hoy);
+            crearHabito(session, carlos, carne, 4, "semanal", hoy.minusDays(2));
 
             // Elena
-            crearHabito(session, elena, bus, 10, "semanal", "2023-10-27");
-            crearHabito(session, elena, veggie, 7, "diaria", "2023-10-30");
+            crearHabito(session, elena, bus, 10, "semanal", hoy.minusDays(4));
+            crearHabito(session, elena, veggie, 7, "diaria", hoy);
 
             // David
-            crearHabito(session, david, ducha, 1, "diaria", "2023-10-30"); // Riego no existe, usamos ducha
-            crearHabito(session, david, residuos, 1, "diaria", "2023-10-30");
+            crearHabito(session, david, ducha, 1, "diaria", hoy); 
+            crearHabito(session, david, residuos, 1, "diaria", hoy);
 
             transaction.commit();
             System.out.println(">> DataSeeder: Usuarios de prueba creados correctamente.");
@@ -146,12 +148,12 @@ public class DataSeeder {
 
     // --- Métodos Auxiliares para Usuarios ---
 
-    private Usuario crearUsuario(Session session, String nombre, String email, String pass, String fecha) {
+    private Usuario crearUsuario(Session session, String nombre, String email, String pass, LocalDate fecha) {
         Usuario u = new Usuario();
         u.setNombre(nombre);
         u.setEmail(email);
         u.setContraseña(pass);
-        u.setFechaRegistro(LocalDate.parse(fecha));
+        u.setFechaRegistro(fecha);
         session.persist(u);
         return u;
     }
@@ -162,18 +164,18 @@ public class DataSeeder {
                 .uniqueResult();
     }
 
-    private void crearHuella(Session session, Usuario u, Actividad a, double valor, String unidad, String fecha) {
+    private void crearHuella(Session session, Usuario u, Actividad a, double valor, String unidad, LocalDate fecha) {
         if (a == null) return; // Seguridad por si no existe la actividad
         Huella h = new Huella();
         h.setId_usuario(u);
         h.setId_actividad(a);
         h.setValor(valor);
         h.setUnidad(unidad);
-        h.setFecha(LocalDate.parse(fecha));
+        h.setFecha(fecha);
         session.persist(h);
     }
 
-    private void crearHabito(Session session, Usuario u, Actividad a, int frec, String tipo, String fecha) {
+    private void crearHabito(Session session, Usuario u, Actividad a, int frec, String tipo, LocalDate fecha) {
         if (a == null) return;
         Habito h = new Habito();
         
@@ -187,7 +189,7 @@ public class DataSeeder {
         h.setActividad(a);
         h.setFrecuencia(frec);
         h.setTipo(tipo);
-        h.setUltimaFecha(LocalDate.parse(fecha));
+        h.setUltimaFecha(fecha);
         session.persist(h);
     }
 

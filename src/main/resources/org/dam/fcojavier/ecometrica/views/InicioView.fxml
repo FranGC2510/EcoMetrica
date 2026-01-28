@@ -37,7 +37,7 @@
 
                 <VBox styleClass="form-panel" HBox.hgrow="ALWAYS" alignment="CENTER" spacing="5" maxWidth="Infinity">
                     <Label text="Total Histórico" styleClass="label-campo"/>
-                    <Label fx:id="lblHuellaTotal" text="0.00 kg" styleClass="label-huella-total"/>
+                    <Label fx:id="lblHuellaTotal" text="0.00 kgCO₂" styleClass="label-huella-total"/>
                     <Label text="acumulado desde el registro" styleClass="label-subtext"/>
                 </VBox>
 
@@ -56,7 +56,7 @@
                     </HBox>
 
                     <HBox alignment="CENTER_RIGHT">
-                        <Label fx:id="lblValoresAbsolutos" text="0 kg / 350 kg" styleClass="label-valores-absolutos"/>
+                        <Label fx:id="lblValoresAbsolutos" text="0 kgCO₂ / 350 kgCO₂" styleClass="label-valores-absolutos"/>
                     </HBox>
                 </VBox>
             </HBox>
