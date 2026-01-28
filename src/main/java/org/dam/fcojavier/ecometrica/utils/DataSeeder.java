@@ -3,10 +3,12 @@ package org.dam.fcojavier.ecometrica.utils;
 import org.dam.fcojavier.ecometrica.dao.ActividadDAO;
 import org.dam.fcojavier.ecometrica.dao.CategoriaDAO;
 import org.dam.fcojavier.ecometrica.dao.RecomendacionDAO;
-import org.dam.fcojavier.ecometrica.entities.Actividad;
-import org.dam.fcojavier.ecometrica.entities.Categoria;
-import org.dam.fcojavier.ecometrica.entities.Recomendacion;
+import org.dam.fcojavier.ecometrica.dao.UsuarioDAO;
+import org.dam.fcojavier.ecometrica.entities.*;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -18,10 +20,11 @@ public class DataSeeder {
     private final CategoriaDAO categoriaDAO = new CategoriaDAO();
     private final ActividadDAO actividadDAO = new ActividadDAO();
     private final RecomendacionDAO recomendacionDAO = new RecomendacionDAO();
+    private final UsuarioDAO usuarioDAO = new UsuarioDAO();
 
     public void sembrarDatos() {
         if (!isBaseDeDatosVacia()) {
-            System.out.println(">> DataSeeder: Datos ya presentes. Omitiendo.");
+            System.out.println(">> DataSeeder: Datos maestros ya presentes. Omitiendo.");
             return;
         }
 
@@ -54,6 +57,166 @@ public class DataSeeder {
         crearRec("Reduce el tiempo de ducha", 5.0, agua);
 
         System.out.println(">> DataSeeder: Proceso finalizado.");
+    }
+
+    /**
+     * Método específico para sembrar usuarios, huellas y hábitos de prueba.
+     * Se ejecuta de forma independiente para no interferir con los datos maestros.
+     */
+    public void sembrarUsuariosDePrueba() {
+        if (usuarioDAO.findByEmail("fran@gmail.com") != null) {
+            System.out.println(">> DataSeeder: Usuarios de prueba ya existen. Omitiendo.");
+            return;
+        }
+
+        System.out.println(">> DataSeeder: Creando usuarios de prueba...");
+
+        Transaction transaction = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+
+            // Hash para "123"
+            String passHash = "$2a$12$R9h/cIPz0gi.URNNXRfx.O83.v.m.Kx.n.L.q.w.z.y.";
+
+            // --- 1. Crear Usuarios ---
+            Usuario ana = crearUsuario(session, "Ana García", "ana@gmail.com", passHash, "2023-01-15");
+            Usuario carlos = crearUsuario(session, "Carlos Ruiz", "carlos@example.com", passHash, "2023-02-20");
+            Usuario elena = crearUsuario(session, "Elena Torres", "elena@example.com", passHash, "2023-03-10");
+            Usuario david = crearUsuario(session, "David Mola", "david@example.com", passHash, "2023-04-05");
+
+            // --- 2. Recuperar Actividades (Necesarias para Huellas y Hábitos) ---
+            // Asumimos que los nombres coinciden con los creados en sembrarDatos()
+            Actividad coche = buscarActividad(session, "Conducir coche");
+            Actividad bus = buscarActividad(session, "Usar transporte público");
+            Actividad electricidad = buscarActividad(session, "Consumo eléctrico");
+            Actividad gas = buscarActividad(session, "Consumo de gas");
+            Actividad carne = buscarActividad(session, "Comer carne de res");
+            Actividad veggie = buscarActividad(session, "Comer alimentos vegetarianos");
+            Actividad ducha = buscarActividad(session, "Consumo de agua potable"); // Usamos agua para ducha
+            Actividad residuos = buscarActividad(session, "Generar residuos domésticos");
+
+            // --- 3. Crear Huellas ---
+            // Ana
+            crearHuella(session, ana, coche, 150.0, "km", "2023-10-01");
+            crearHuella(session, ana, electricidad, 200.0, "kWh", "2023-10-05");
+            crearHuella(session, ana, carne, 5.0, "kg", "2023-10-10");
+            crearHuella(session, ana, ducha, 100.0, "m3", "2023-10-15"); // Ojo unidad m3 según categoría Agua
+
+            // Carlos
+            crearHuella(session, carlos, coche, 400.0, "km", "2023-10-02");
+            crearHuella(session, carlos, gas, 50.0, "kWh", "2023-10-12"); // Gas usa unidad de Energía
+            crearHuella(session, carlos, carne, 8.0, "kg", "2023-10-18");
+
+            // Elena
+            crearHuella(session, elena, bus, 20.0, "km", "2023-10-03");
+            crearHuella(session, elena, veggie, 15.0, "kg", "2023-10-07");
+            crearHuella(session, elena, electricidad, 120.0, "kWh", "2023-10-14");
+
+            // David
+            crearHuella(session, david, electricidad, 350.0, "kWh", "2023-10-04");
+            crearHuella(session, david, ducha, 200.0, "m3", "2023-10-09");
+            crearHuella(session, david, residuos, 10.0, "kg", "2023-10-22");
+
+            // --- 4. Crear Hábitos ---
+            // Ana
+            crearHabito(session, ana, coche, 5, "semanal", "2023-10-25");
+            crearHabito(session, ana, residuos, 1, "semanal", "2023-10-28");
+
+            // Carlos
+            crearHabito(session, carlos, coche, 2, "diaria", "2023-10-30");
+            crearHabito(session, carlos, carne, 4, "semanal", "2023-10-29");
+
+            // Elena
+            crearHabito(session, elena, bus, 10, "semanal", "2023-10-27");
+            crearHabito(session, elena, veggie, 7, "diaria", "2023-10-30");
+
+            // David
+            crearHabito(session, david, ducha, 1, "diaria", "2023-10-30"); // Riego no existe, usamos ducha
+            crearHabito(session, david, residuos, 1, "diaria", "2023-10-30");
+
+            transaction.commit();
+            System.out.println(">> DataSeeder: Usuarios de prueba creados correctamente.");
+
+        } catch (Exception e) {
+            if (transaction != null) transaction.rollback();
+            e.printStackTrace();
+            System.err.println(">> DataSeeder: Error al crear usuarios de prueba.");
+        }
+    }
+
+    // --- Métodos Auxiliares para Usuarios ---
+
+    private Usuario crearUsuario(Session session, String nombre, String email, String pass, String fecha) {
+        Usuario u = new Usuario();
+        u.setNombre(nombre);
+        u.setEmail(email);
+        u.setContraseña(pass);
+        u.setFechaRegistro(LocalDate.parse(fecha));
+        session.persist(u);
+        return u;
+    }
+
+    private Actividad buscarActividad(Session session, String nombre) {
+        return session.createQuery("FROM Actividad WHERE nombre = :n", Actividad.class)
+                .setParameter("n", nombre)
+                .uniqueResult();
+    }
+
+    private void crearHuella(Session session, Usuario u, Actividad a, double valor, String unidad, String fecha) {
+        if (a == null) return; // Seguridad por si no existe la actividad
+        Huella h = new Huella();
+        h.setId_usuario(u);
+        h.setId_actividad(a);
+        h.setValor(valor);
+        h.setUnidad(unidad);
+        h.setFecha(LocalDate.parse(fecha));
+        session.persist(h);
+    }
+
+    private void crearHabito(Session session, Usuario u, Actividad a, int frec, String tipo, String fecha) {
+        if (a == null) return;
+        Habito h = new Habito();
+        
+        // Configurar ID Compuesto
+        HabitoId id = new HabitoId();
+        id.setIdUsuario(u.getId());
+        id.setIdActividad(a.getId());
+        h.setId(id);
+
+        h.setUsuario(u);
+        h.setActividad(a);
+        h.setFrecuencia(frec);
+        h.setTipo(tipo);
+        h.setUltimaFecha(LocalDate.parse(fecha));
+        session.persist(h);
+    }
+
+    public void eliminarDatosDeUsuario() {
+        Transaction transaction = null;
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+
+            System.out.println("⚠️ Iniciando limpieza de datos de usuario...");
+
+            // 1. Desactivar comprobación de claves foráneas (MySQL/MariaDB)
+            session.createNativeQuery("SET FOREIGN_KEY_CHECKS = 0").executeUpdate();
+
+            // 2. Truncar las tablas solicitadas (Orden irrelevante al desactivar FK)
+            session.createNativeQuery("TRUNCATE TABLE huella").executeUpdate();
+            session.createNativeQuery("TRUNCATE TABLE habito").executeUpdate(); // Asegúrate que la tabla se llama 'habito'
+            session.createNativeQuery("TRUNCATE TABLE usuario").executeUpdate();
+
+            // 3. Reactivar comprobación de claves foráneas
+            session.createNativeQuery("SET FOREIGN_KEY_CHECKS = 1").executeUpdate();
+
+            transaction.commit();
+            System.out.println("✅ Datos de Usuario, Huella y Hábito eliminados correctamente.");
+
+        } catch (Exception e) {
+            if (transaction != null) transaction.rollback();
+            e.printStackTrace();
+            System.err.println("❌ Error al eliminar los datos.");
+        }
     }
 
     private boolean isBaseDeDatosVacia() {

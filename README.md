@@ -1,4 +1,4 @@
-# EcoMetrica: Tu Gestor Inteligente de Huella de Carbono 🌍🌱
+# EcoMetrica: Tu Gestor Inteligente de Huella de Carbono 
 
 **EcoMetrica** es una aplicación de escritorio desarrollada en Java diseñada para transformar la conciencia ambiental en datos accionables. En un contexto donde individuos y organizaciones buscan reducir su impacto en el medio ambiente, EcoMetrica ofrece una herramienta tecnológica precisa para calcular, monitorear y optimizar la huella de carbono personal.
 
