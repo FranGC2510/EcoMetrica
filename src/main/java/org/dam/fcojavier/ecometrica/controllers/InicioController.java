@@ -63,11 +63,11 @@ public class InicioController {
         LocalDate inicioMes = LocalDate.now().with(TemporalAdjusters.firstDayOfMonth());
         LocalDate finMes = LocalDate.now().with(TemporalAdjusters.lastDayOfMonth());
         double totalMes = huellaService.calcularImpactoRango(usuario, inicioMes, finMes);
-        lblHuellaMes.setText(String.format("%.2f kg", totalMes));
+        lblHuellaMes.setText(String.format("%.2f kgCO₂", totalMes));
 
         // KPI 2: Total Histórico
         double totalHistorico = huellaService.calcularImpactoTotal(usuario);
-        lblHuellaTotal.setText(String.format("%.2f kg", totalHistorico));
+        lblHuellaTotal.setText(String.format("%.2f kgCO₂", totalHistorico));
     }
 
     /**
@@ -113,7 +113,7 @@ public class InicioController {
         double porcentaje = miHuella / mediaComunidad;
 
         barraProgreso.setProgress(Math.min(porcentaje, 1.0));
-        lblValoresAbsolutos.setText(String.format("Tú: %.1f kg / Media: %.1f kg", miHuella, mediaComunidad));
+        lblValoresAbsolutos.setText(String.format("Tú: %.1f kgCO₂ / Media: %.1f kgCO₂", miHuella, mediaComunidad));
 
         actualizarEstiloBarraProgreso(porcentaje);
     }
